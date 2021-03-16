@@ -1,6 +1,7 @@
 import React from "react";
 import { AppProps } from "next/app";
 import "@styles/global.scss";
+import "@styles/index.scss";
 import { Provider } from "react-redux";
 import store from "@redux/store";
 import { appWithTranslation } from "@i18n";
