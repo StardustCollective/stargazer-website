@@ -1,9 +1,14 @@
 import React from "react";
 import Image from "next/image";
-import { Button } from "@components/scss/button";
+import AppsSharpIcon from "@material-ui/icons/AppsSharp";
+import { IconButton } from "@material-ui/core";
+import { Button } from "@components/common/button/index";
 import styles from "./index.module.scss";
 
 export const Header: React.FC = () => {
+  const handleClick = () => {
+    console.log("Handle Connect");
+  };
   return (
     <div className={styles.header}>
       <div className={styles.left}>
@@ -22,6 +27,18 @@ export const Header: React.FC = () => {
         <a className={styles.navItem}>Documentation</a>
         <span className={styles.splitter} />
         <a className={styles.navItem}>About</a>
+        <Button
+          type="button"
+          theme="secondary"
+          variant={styles.button}
+          onClick={handleClick}
+          disabled={false}
+        >
+          Connect Wallet
+        </Button>
+        <IconButton className={styles.iconButton}>
+          <AppsSharpIcon />
+        </IconButton>
       </div>
     </div>
   );
