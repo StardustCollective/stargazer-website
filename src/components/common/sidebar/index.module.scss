@@ -43,6 +43,8 @@
       line-height: 18px;
       color: $gray-light;
       padding: 4px 0;
+      user-select: none;
+      cursor: pointer;
     }
   }
 }
