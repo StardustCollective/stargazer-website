@@ -1,0 +1,8 @@
+.bodyWrapper {
+  display: flex;
+  flex-direction: row;
+  .contentWrapper {
+    width: calc(100vw - 180px);
+    overflow-y: auto;
+  }
+}
