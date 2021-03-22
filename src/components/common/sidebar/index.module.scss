@@ -21,6 +21,12 @@
       padding: 12px 0;
       user-select: none;
       cursor: pointer;
+      &:hover {
+        color: $primary-600;
+        .label {
+          color: $primary-600;
+        }
+      }
       svg {
         height: 16px;
       }
