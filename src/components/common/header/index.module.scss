@@ -27,11 +27,18 @@
     display: flex;
     align-items: center;
     .navItem {
+      // height: 38px;
       font-size: 16px;
       line-height: 20px;
       color: $white;
       user-select: none;
       cursor: pointer;
+      &:hover {
+        // text-decoration: underline;
+        padding-top: 8px;
+        border-bottom: 1px solid $white;
+        padding-bottom: 8px;
+      }
     }
     .splitter {
       &:after {
