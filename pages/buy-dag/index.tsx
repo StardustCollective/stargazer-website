@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useDebugValue, useState } from "react";
 import classnames from "classnames";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import CreditCardIcon from "@material-ui/icons/CreditCard";
@@ -11,6 +11,8 @@ interface IProps {
   expandable?: boolean;
   logoUrl: string;
   currency: string;
+  onValueChange: (e) => void;
+  value?: string;
 }
 
 const FormItem: React.FC<IProps> = ({
@@ -18,11 +20,13 @@ const FormItem: React.FC<IProps> = ({
   expandable,
   logoUrl,
   currency,
+  onValueChange,
+  value,
 }: IProps) => {
   return (
     <div className={styles.item}>
       <span className={styles.label}>{label}</span>
-      <input placeholder="0.0" />
+      <input placeholder="0.0" onChange={onValueChange} value={value} />
       <span className={styles.splitter}></span>
       <div className={styles.currencySelector}>
         <img className={styles.logo} src={logoUrl} />
@@ -44,35 +48,77 @@ const Card: React.FC = () => {
   );
 };
 
+const BuyDagForm: React.FC = () => {
+  const [usdValue, setUsdValue] = useState("");
+  const [dagValue, setDagValue] = useState("");
+  const conversionRate = 0.06; /// 1 DAG is 0.06 USD
+
+  const handleUsdValueChange = (e) => {
+    const inputValue = e.target.value;
+    if (inputValue === "") {
+      setDagValue("");
+      setUsdValue("");
+    } else if (isFinite(inputValue)) {
+      const nUsd = parseFloat(inputValue);
+      setUsdValue(inputValue);
+      setDagValue(`${(nUsd / conversionRate).toFixed(6)}`);
+    }
+  };
+
+  const handleDagValueChange = (e) => {
+    const inputValue = e.target.value;
+    if (inputValue === "") {
+      setDagValue("");
+      setUsdValue("");
+    } else if (isFinite(inputValue)) {
+      const nDag = parseFloat(inputValue);
+      setDagValue(inputValue);
+      setUsdValue(`${(nDag * conversionRate).toFixed(6)}`);
+    }
+  };
+
+  return (
+    <div className={styles.formWrapper}>
+      <div className={styles.header}>
+        <div className={styles.title}>Buy Dag</div>
+      </div>
+      <div className={styles.body}>
+        <FormItem
+          label="Spend"
+          expandable={true}
+          logoUrl="/icons/usd.svg"
+          currency="USD"
+          onValueChange={handleUsdValueChange}
+          value={usdValue}
+        />
+        <FormItem
+          label="Buy"
+          logoUrl="/icons/dag.svg"
+          currency="DAG"
+          onValueChange={handleDagValueChange}
+          value={dagValue}
+        />
+        <Card />
+        <Button
+          type="button"
+          theme="primary"
+          variant={styles.button}
+          onClick={() => {
+            console.log("onClick");
+          }}
+          disabled={usdValue === "" || dagValue === ""}
+        >
+          Buy Dag
+        </Button>
+      </div>
+    </div>
+  );
+};
+
 const BuyDag: React.FC = () => {
   return (
     <Layout>
-      <div className={styles.formWrapper}>
-        <div className={styles.header}>
-          <div className={styles.title}>Buy Dag</div>
-        </div>
-        <div className={styles.body}>
-          <FormItem
-            label="Spend"
-            expandable={true}
-            logoUrl="/icons/usd.svg"
-            currency="USD"
-          />
-          <FormItem label="Buy" logoUrl="/icons/dag.svg" currency="DAG" />
-          <Card />
-          <Button
-            type="button"
-            theme="primary"
-            variant={styles.button}
-            onClick={() => {
-              console.log("onClick");
-            }}
-            disabled={false}
-          >
-            Buy Dag
-          </Button>
-        </div>
-      </div>
+      <BuyDagForm />
     </Layout>
   );
 };
