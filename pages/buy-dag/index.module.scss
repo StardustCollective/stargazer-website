@@ -23,7 +23,11 @@
     }
   }
   .body {
-    padding: 24px;
+    margin: 0 24px;
+    padding: 24px 0;
+    height: 396px;
+    box-sizing: border-box;
+    position: relative;
     .item {
       width: 100%;
       height: 36px;
@@ -102,6 +106,11 @@
           color: $gray-dark;
         }
       }
+    }
+    button {
+      width: 100%;
+      position: absolute;
+      bottom: 24px;
     }
   }
 }

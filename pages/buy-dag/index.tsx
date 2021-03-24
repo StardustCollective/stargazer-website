@@ -3,7 +3,7 @@ import classnames from "classnames";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import CreditCardIcon from "@material-ui/icons/CreditCard";
 
-import { Layout } from "@components/common";
+import { Layout, Button } from "@components/common";
 import styles from "./index.module.scss";
 
 interface IProps {
@@ -60,6 +60,17 @@ const BuyDag: React.FC = () => {
           />
           <FormItem label="Buy" logoUrl="/icons/dag.svg" currency="DAG" />
           <Card />
+          <Button
+            type="button"
+            theme="primary"
+            variant={styles.button}
+            onClick={() => {
+              console.log("onClick");
+            }}
+            disabled={false}
+          >
+            Buy Dag
+          </Button>
         </div>
       </div>
     </Layout>
