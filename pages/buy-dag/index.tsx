@@ -108,7 +108,7 @@ const BuyDagForm: React.FC = () => {
           }}
           disabled={usdValue === "" || dagValue === ""}
         >
-          Buy Dag
+          Buy DAG
         </Button>
       </div>
     </div>
