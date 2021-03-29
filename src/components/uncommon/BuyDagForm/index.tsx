@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import classnames from "classnames";
+
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import CreditCardIcon from "@material-ui/icons/CreditCard";
 
@@ -151,6 +152,33 @@ export const BuyDagFormStep1: React.FC = () => {
         <Button type="button" theme="primary" variant={styles.button}>
           Next
         </Button>
+      </div>
+    </div>
+  );
+};
+
+export const BuyDagFormStep2: React.FC = () => {
+  return (
+    <div className={styles.formWrapper}>
+      <div className={styles.header}>
+        <div className={styles.title}>Buy with Card</div>
+      </div>
+      <div className={styles.body}>
+        <StepMarker currentStep={2} />
+        <FormInput label="Country" country={true} />
+        <FormInput label="Address" />
+        <div className={styles.halfWrapper}>
+          <FormInput label="City" />
+          <FormInput label="Postal Code" />
+        </div>
+        <div className={classnames(styles.actionGroup, styles.halfWrapper)}>
+          <Button type="button" theme="darkgray" variant={styles.button}>
+            Previous
+          </Button>
+          <Button type="button" theme="success" variant={styles.button}>
+            Pay Now
+          </Button>
+        </div>
       </div>
     </div>
   );

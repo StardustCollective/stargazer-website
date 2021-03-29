@@ -5,7 +5,7 @@
   flex-direction: column;
   margin-bottom: 16px;
   position: relative;
-  span {
+  .label {
     font-family: Inter;
     font-style: normal;
     font-weight: 500;
@@ -51,5 +51,32 @@
   }
   &:last-child {
     margin-bottom: 0 !important;
+  }
+  button {
+    position: inherit !important;
+    bottom: 0 !important;
+    font-size: 12px !important;
+    border: 1px solid #e3e3e3;
+    border-radius: 6px;
+    height: 36px;
+    box-sizing: border-box;
+    padding: 12px;
+    font-family: Inter;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 15px;
+    display: flex;
+    align-items: center;
+    color: $black;
+    box-shadow: none !important;
+    &::after {
+      display: none !important;
+    }
+  }
+  svg.expandMore {
+    position: absolute;
+    top: 32px;
+    right: 8px;
   }
 }

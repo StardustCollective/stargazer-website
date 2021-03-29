@@ -119,5 +119,14 @@
       grid-template-columns: 132px 132px;
       grid-gap: 12px;
     }
+    .actionGroup {
+      width: 100%;
+      position: absolute;
+      bottom: 24px;
+      button {
+        position: relative;
+        bottom: 0;
+      }
+    }
   }
 }

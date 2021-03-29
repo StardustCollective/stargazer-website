@@ -2,7 +2,7 @@
 
 body {
   .button {
-    padding: 8px 40px;
+    padding: 8px 30px;
     font-family: "Inter";
     font-weight: 500;
     font-size: 12px;
@@ -59,6 +59,26 @@ body {
 
       &:hover {
         background: $primary-100;
+      }
+    }
+
+    &.success {
+      background: $success;
+      color: $white;
+
+      &:hover {
+        background: $success;
+        color: $white;
+      }
+    }
+
+    &.darkgray {
+      background: $gray-dark;
+      color: $white;
+
+      &:hover {
+        background: $gray-dark;
+        color: $white;
       }
     }
 
