@@ -5,6 +5,7 @@ import CreditCardIcon from "@material-ui/icons/CreditCard";
 
 import { Button } from "@components/common";
 import { StepMarker } from "./StepMarker";
+import { FormInput } from "./FormInput";
 
 import styles from "./index.module.scss";
 
@@ -140,7 +141,16 @@ export const BuyDagFormStep1: React.FC = () => {
         <div className={styles.title}>Buy with Card</div>
       </div>
       <div className={styles.body}>
-        <StepMarker currentStep={2} />
+        <StepMarker currentStep={1} />
+        <FormInput label="Name on Card" />
+        <FormInput label="Card Number" visa={true} />
+        <div className={styles.halfWrapper}>
+          <FormInput label="Expiry Date" placeholder="MM/YY" />
+          <FormInput label="CVV" placeholder="CVV" />
+        </div>
+        <Button type="button" theme="primary" variant={styles.button}>
+          Next
+        </Button>
       </div>
     </div>
   );
