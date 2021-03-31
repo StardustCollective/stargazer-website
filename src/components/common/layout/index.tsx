@@ -1,4 +1,5 @@
 import { Header, Sidebar } from "@components/common";
+import Image from "next/image";
 import styles from "./index.module.scss";
 
 export const Layout: React.FC = ({ children }) => {
@@ -7,7 +8,16 @@ export const Layout: React.FC = ({ children }) => {
       <Header />
       <div className={styles.bodyWrapper}>
         <Sidebar />
-        <div className={styles.contentWrapper}>{children}</div>
+        <div className={styles.contentWrapper}>
+          {children}
+          <div className={styles.bottomLogoWrapper}>
+            <img
+              className={styles.bottomLogo}
+              src="/images/bottom-logo.svg"
+              alt="logo"
+            />
+          </div>
+        </div>
       </div>
     </>
   );

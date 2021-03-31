@@ -13,7 +13,7 @@ export const Sidebar: React.FC = () => {
   return (
     <div className={styles.sidebar}>
       <div className={styles.body}>
-        <Link href="/">
+        <Link href="/connect-wallet">
           <div className={styles.item}>
             <AccountBalanceWalletIcon />
             <span className={styles.label}>Connect Wallet</span>
@@ -25,19 +25,19 @@ export const Sidebar: React.FC = () => {
             <span className={styles.label}>Buy DAG</span>
           </div>
         </Link>
-        <Link href="/">
+        <Link href="/portfolio">
           <div className={styles.item}>
             <PersonIcon />
             <span className={styles.label}>Portfolio</span>
           </div>
         </Link>
-        <Link href="/">
+        <Link href="/swap">
           <div className={styles.item}>
             <SwapCallsIcon />
             <span className={styles.label}>Swap</span>
           </div>
         </Link>
-        <Link href="/">
+        <Link href="/terminal">
           <div className={styles.item}>
             <DashboardIcon />
             <span className={styles.label}>Terminal</span>
@@ -46,10 +46,14 @@ export const Sidebar: React.FC = () => {
       </div>
       <div className={styles.footer}>
         <div className={styles.item}>
-          <span className={styles.label}>Terms & Conditions</span>
+          <Link href="/terms-and-conditions">
+            <span className={styles.label}>Terms & Conditions</span>
+          </Link>
         </div>
         <div className={styles.item}>
-          <span className={styles.label}>Privacy Policy</span>
+          <Link href="/privacy-policy">
+            <span className={styles.label}>Privacy Policy</span>
+          </Link>
         </div>
       </div>
     </div>
