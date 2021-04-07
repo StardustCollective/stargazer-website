@@ -1,8 +1,8 @@
 import { combineReducers } from "redux";
 
-import counter from "@redux/slices/counter";
+import buyDag from "@redux/slices/buy-dag";
 
-const rootReducer = combineReducers({ counter });
+const rootReducer = combineReducers({ buyDag });
 
 export type RootState = ReturnType<typeof rootReducer>;
 
