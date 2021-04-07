@@ -50,12 +50,11 @@ const BuyDag: React.FC = () => {
         )}
         {step === 2 && (
           <BuyDagFormStep1
-            nextStep={({ name, cardNumber, expiryDate, cvv }) => {
-              setName(name);
+            nextStep={({ cardName, cardNumber, expiryDate, cvv }) => {
+              setName(cardName);
               setCardNumber(cardNumber);
               setExpiryDate(expiryDate);
               setCvv(cvv);
-              console.log({ name, cardNumber, expiryDate, cvv });
               setStep(3);
             }}
           />

@@ -153,13 +153,13 @@ export const BuyDagForm: React.FC<BDFProp> = ({ nextStep }: BDFProp) => {
 };
 
 interface BDF1Prop {
-  nextStep: ({ name, cardNumber, expiryDate, cvv }) => void;
+  nextStep: ({ cardName, cardNumber, expiryDate, cvv }) => void;
 }
 export const BuyDagFormStep1: React.FC<BDF1Prop> = ({ nextStep }: BDF1Prop) => {
-  const [name, setName] = useState("");
-  const [cardNumber, setCardNumber] = useState("");
-  const [expiryDate, setExpiryDate] = useState("");
-  const [cvv, setCvv] = useState("");
+  const dispatch = useDispatch();
+  const { cardName, cardNumber, expiryDate, cvv } = useSelector(
+    (root: RootState) => root.buyDag,
+  );
   return (
     <div className={styles.formWrapper}>
       <div className={styles.header}>
@@ -169,34 +169,58 @@ export const BuyDagFormStep1: React.FC<BDF1Prop> = ({ nextStep }: BDF1Prop) => {
         <StepMarker currentStep={1} />
         <FormInput
           label="Name on Card"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
+          value={cardName}
+          onChange={(e) =>
+            dispatch(
+              setState({
+                cardName: e.target.value,
+              }),
+            )
+          }
         />
         <FormInput
           label="Card Number"
           visa={true}
           value={cardNumber}
-          onChange={(e) => setCardNumber(e.target.value)}
+          onChange={(e) =>
+            dispatch(
+              setState({
+                cardNumber: e.target.value,
+              }),
+            )
+          }
         />
         <div className={styles.halfWrapper}>
           <FormInput
             label="Expiry Date"
             placeholder="MM/YY"
             value={expiryDate}
-            onChange={(e) => setExpiryDate(e.target.value)}
+            onChange={(e) =>
+              dispatch(
+                setState({
+                  expiryDate: e.target.value,
+                }),
+              )
+            }
           />
           <FormInput
             label="CVV"
             placeholder="CVV"
             value={cvv}
-            onChange={(e) => setCvv(e.target.value)}
+            onChange={(e) =>
+              dispatch(
+                setState({
+                  cvv: e.target.value,
+                }),
+              )
+            }
           />
         </div>
         <Button
           type="button"
           theme="primary"
           variant={styles.button}
-          onClick={() => nextStep({ name, cardNumber, expiryDate, cvv })}
+          onClick={() => nextStep({ cardName, cardNumber, expiryDate, cvv })}
         >
           Next
         </Button>
