@@ -1,9 +1,12 @@
 import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import classnames from "classnames";
 
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import CreditCardIcon from "@material-ui/icons/CreditCard";
 
+import { setState } from "@redux/actions";
+import { RootState } from "@redux/reducers";
 import { Button } from "@components/common";
 import { StepMarker } from "./StepMarker";
 import { FormInput } from "./FormInput";
@@ -68,32 +71,48 @@ export const Card: React.FC = () => {
   );
 };
 
-export const BuyDagForm: React.FC = () => {
-  const [usdValue, setUsdValue] = useState("");
-  const [dagValue, setDagValue] = useState("");
+interface BDFProp {
+  nextStep: (usdValue, dagValue) => void;
+}
+export const BuyDagForm: React.FC<BDFProp> = ({ nextStep }: BDFProp) => {
   const conversionRate = 0.06; /// 1 DAG is 0.06 USD
-
+  const dispatch = useDispatch();
+  const { usdValue, dagValue } = useSelector((root: RootState) => root.buyDag);
+  const setUsdValue = (value) => {
+    dispatch(
+      setState({
+        usdValue: value,
+      }),
+    );
+  };
+  const setDagValue = (value) => {
+    dispatch(
+      setState({
+        dagValue: value,
+      }),
+    );
+  };
   const handleUsdValueChange = (e) => {
     const inputValue = e.target.value;
-    if (inputValue === "") {
-      setDagValue("");
-      setUsdValue("");
+    if (inputValue === "" || inputValue === "0") {
+      setDagValue(0);
+      setUsdValue(0);
     } else if (isFinite(inputValue)) {
       const nUsd = parseFloat(inputValue);
       setUsdValue(inputValue);
-      setDagValue(`${(nUsd / conversionRate).toFixed(6)}`);
+      setDagValue((nUsd / conversionRate).toFixed(6));
     }
   };
 
   const handleDagValueChange = (e) => {
     const inputValue = e.target.value;
-    if (inputValue === "") {
-      setDagValue("");
-      setUsdValue("");
+    if (inputValue === "" || inputValue === "0") {
+      setDagValue(0);
+      setUsdValue(0);
     } else if (isFinite(inputValue)) {
       const nDag = parseFloat(inputValue);
       setDagValue(inputValue);
-      setUsdValue(`${(nDag * conversionRate).toFixed(6)}`);
+      setUsdValue((nDag * conversionRate).toFixed(6));
     }
   };
 
@@ -109,24 +128,22 @@ export const BuyDagForm: React.FC = () => {
           logoUrl="/icons/usd.svg"
           currency="USD"
           onValueChange={handleUsdValueChange}
-          value={usdValue}
+          value={usdValue.toString()}
         />
         <FormItem
           label="Buy"
           logoUrl="/icons/dag.svg"
           currency="DAG"
           onValueChange={handleDagValueChange}
-          value={dagValue}
+          value={dagValue.toString()}
         />
         <Card />
         <Button
           type="button"
           theme="primary"
           variant={styles.button}
-          onClick={() => {
-            console.log("onClick");
-          }}
-          disabled={usdValue === "" || dagValue === ""}
+          onClick={() => nextStep(usdValue, dagValue)}
+          disabled={usdValue === 0 || dagValue === 0}
         >
           Buy DAG
         </Button>
@@ -135,7 +152,14 @@ export const BuyDagForm: React.FC = () => {
   );
 };
 
-export const BuyDagFormStep1: React.FC = () => {
+interface BDF1Prop {
+  nextStep: ({ name, cardNumber, expiryDate, cvv }) => void;
+}
+export const BuyDagFormStep1: React.FC<BDF1Prop> = ({ nextStep }: BDF1Prop) => {
+  const [name, setName] = useState("");
+  const [cardNumber, setCardNumber] = useState("");
+  const [expiryDate, setExpiryDate] = useState("");
+  const [cvv, setCvv] = useState("");
   return (
     <div className={styles.formWrapper}>
       <div className={styles.header}>
@@ -143,13 +167,37 @@ export const BuyDagFormStep1: React.FC = () => {
       </div>
       <div className={styles.body}>
         <StepMarker currentStep={1} />
-        <FormInput label="Name on Card" />
-        <FormInput label="Card Number" visa={true} />
+        <FormInput
+          label="Name on Card"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+        <FormInput
+          label="Card Number"
+          visa={true}
+          value={cardNumber}
+          onChange={(e) => setCardNumber(e.target.value)}
+        />
         <div className={styles.halfWrapper}>
-          <FormInput label="Expiry Date" placeholder="MM/YY" />
-          <FormInput label="CVV" placeholder="CVV" />
+          <FormInput
+            label="Expiry Date"
+            placeholder="MM/YY"
+            value={expiryDate}
+            onChange={(e) => setExpiryDate(e.target.value)}
+          />
+          <FormInput
+            label="CVV"
+            placeholder="CVV"
+            value={cvv}
+            onChange={(e) => setCvv(e.target.value)}
+          />
         </div>
-        <Button type="button" theme="primary" variant={styles.button}>
+        <Button
+          type="button"
+          theme="primary"
+          variant={styles.button}
+          onClick={() => nextStep({ name, cardNumber, expiryDate, cvv })}
+        >
           Next
         </Button>
       </div>
@@ -157,7 +205,14 @@ export const BuyDagFormStep1: React.FC = () => {
   );
 };
 
-export const BuyDagFormStep2: React.FC = () => {
+interface BDF2Prop {
+  prevStep: () => void;
+  nextStep: ({ name, cardNumber, expiryDate, cvv }) => void;
+}
+export const BuyDagFormStep2: React.FC<BDF2Prop> = ({
+  prevStep,
+  nextStep,
+}: BDF2Prop) => {
   return (
     <div className={styles.formWrapper}>
       <div className={styles.header}>
@@ -172,7 +227,12 @@ export const BuyDagFormStep2: React.FC = () => {
           <FormInput label="Postal Code" />
         </div>
         <div className={classnames(styles.actionGroup, styles.halfWrapper)}>
-          <Button type="button" theme="darkgray" variant={styles.button}>
+          <Button
+            type="button"
+            theme="darkgray"
+            variant={styles.button}
+            onClick={() => prevStep()}
+          >
             Previous
           </Button>
           <Button type="button" theme="success" variant={styles.button}>

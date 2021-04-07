@@ -4,13 +4,14 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import ExpandLessIcon from "@material-ui/icons/ExpandLess";
 
 import styles from "./index.module.scss";
-import { stat } from "node:fs";
 
 interface IProps {
   label: string;
   placeholder?: string;
   visa?: boolean;
   country?: boolean;
+  value?: string;
+  onChange?: (e) => void;
 }
 
 export const FormInput: React.FC<IProps> = ({
@@ -18,6 +19,8 @@ export const FormInput: React.FC<IProps> = ({
   label,
   visa,
   country,
+  value,
+  onChange,
 }: IProps) => {
   const [selected, setSelected] = useState("");
   const [dropdownStatus, setDropdownStatus] = useState(false);
@@ -53,6 +56,8 @@ export const FormInput: React.FC<IProps> = ({
           type="text"
           placeholder={placeholder}
           className={visa ? styles.creditCard : ""}
+          onChange={onChange}
+          value={value}
         />
       )}
       {visa && (
