@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import classnames from "classnames";
+import clm from "country-locale-map";
 
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import CreditCardIcon from "@material-ui/icons/CreditCard";
@@ -231,12 +232,16 @@ export const BuyDagFormStep1: React.FC<BDF1Prop> = ({ nextStep }: BDF1Prop) => {
 
 interface BDF2Prop {
   prevStep: () => void;
-  nextStep: ({ name, cardNumber, expiryDate, cvv }) => void;
+  nextStep: ({ country, address, city, postalCode }) => void;
 }
 export const BuyDagFormStep2: React.FC<BDF2Prop> = ({
   prevStep,
   nextStep,
 }: BDF2Prop) => {
+  const dispatch = useDispatch();
+  const { country, address, city, postalCode } = useSelector(
+    (root: RootState) => root.buyDag,
+  );
   return (
     <div className={styles.formWrapper}>
       <div className={styles.header}>
@@ -244,11 +249,51 @@ export const BuyDagFormStep2: React.FC<BDF2Prop> = ({
       </div>
       <div className={styles.body}>
         <StepMarker currentStep={2} />
-        <FormInput label="Country" country={true} />
-        <FormInput label="Address" />
+        <FormInput
+          label="Country"
+          country={true}
+          onChange={(country) => {
+            dispatch(
+              setState({
+                country: clm.getCountryByAlpha2(country).name,
+              }),
+            );
+          }}
+        />
+        <FormInput
+          label="Address"
+          value={address}
+          onChange={(e) =>
+            dispatch(
+              setState({
+                address: e.target.value,
+              }),
+            )
+          }
+        />
         <div className={styles.halfWrapper}>
-          <FormInput label="City" />
-          <FormInput label="Postal Code" />
+          <FormInput
+            label="City"
+            value={city}
+            onChange={(e) =>
+              dispatch(
+                setState({
+                  city: e.target.value,
+                }),
+              )
+            }
+          />
+          <FormInput
+            label="Postal Code"
+            value={postalCode}
+            onChange={(e) =>
+              dispatch(
+                setState({
+                  postalCode: e.target.value,
+                }),
+              )
+            }
+          />
         </div>
         <div className={classnames(styles.actionGroup, styles.halfWrapper)}>
           <Button
@@ -259,7 +304,12 @@ export const BuyDagFormStep2: React.FC<BDF2Prop> = ({
           >
             Previous
           </Button>
-          <Button type="button" theme="success" variant={styles.button}>
+          <Button
+            type="button"
+            theme="success"
+            variant={styles.button}
+            onClick={() => nextStep({ country, address, city, postalCode })}
+          >
             Pay Now
           </Button>
         </div>

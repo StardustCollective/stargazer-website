@@ -17,6 +17,7 @@
     "@reduxjs/toolkit": "^1.5.0",
     "@zeit/next-sass": "^1.0.1",
     "classnames": "^2.2.6",
+    "country-locale-map": "^1.4.12",
     "next": "10.0.3",
     "next-compose-plugins": "^2.2.1",
     "next-i18next": "^7.0.1",

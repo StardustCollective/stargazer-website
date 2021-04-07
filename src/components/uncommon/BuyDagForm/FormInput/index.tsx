@@ -42,7 +42,11 @@ export const FormInput: React.FC<IProps> = ({
         <>
           <ReactFlagsSelect
             selected={selected}
-            onSelect={(code) => setSelected(code)}
+            onSelect={(code) => {
+              console.log(code);
+              setSelected(code);
+              onChange(code);
+            }}
             className={styles.countrySelector}
           />
           {dropdownStatus ? (

@@ -7,6 +7,10 @@ interface IBuyDag {
   cardNumber: string;
   expiryDate: string;
   cvv: string;
+  country: string;
+  address: string;
+  city: string;
+  postalCode: string;
 }
 
 const initialState: IBuyDag = {
@@ -16,6 +20,10 @@ const initialState: IBuyDag = {
   cardName: "",
   expiryDate: "",
   cvv: "",
+  country: "",
+  address: "",
+  city: "",
+  postalCode: "",
 };
 
 const buyDagSlice = createSlice({
@@ -23,7 +31,6 @@ const buyDagSlice = createSlice({
   initialState,
   reducers: {
     setState(state, { payload }) {
-      console.log("usd,dag", state.usdValue, state.dagValue);
       return {
         ...state,
         ...payload,
