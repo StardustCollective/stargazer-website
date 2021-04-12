@@ -11,6 +11,8 @@ interface IProps {
   visa?: boolean;
   country?: boolean;
   value?: string;
+  error?: boolean;
+  errMsg?: string;
   onChange?: (e) => void;
 }
 
@@ -20,6 +22,8 @@ export const FormInput: React.FC<IProps> = ({
   visa,
   country,
   value,
+  // error,
+  // errMsg,
   onChange,
 }: IProps) => {
   const [selected, setSelected] = useState("");
@@ -70,6 +74,11 @@ export const FormInput: React.FC<IProps> = ({
           <img className={styles.visacard} src="/icons/visa-card.svg" />
         </>
       )}
+      {/* {error && (
+        <div className={styles.error}>
+          <span className={styles.errMsg}>{errMsg}</span>
+        </div>
+      )} */}
     </div>
   );
 };

@@ -161,8 +161,37 @@ export const BuyDagFormStep1: React.FC<BDF1Prop> = ({ nextStep }: BDF1Prop) => {
   const { cardName, cardNumber, expiryDate, cvv } = useSelector(
     (root: RootState) => root.buyDag,
   );
+  const validDate = (dValue) => {
+    let result = false;
+    const pattern = /^\d{2}$/;
+    dValue = dValue.split("/");
+
+    if (dValue[0] < 1 || dValue[0] > 12) result = true;
+
+    if (!pattern.test(dValue[0]) || !pattern.test(dValue[1])) result = true;
+
+    if (dValue[2]) result = true;
+    return !result;
+    // if (result) alert("Please enter a valid date in MM/YY format.");
+  };
+  const validateCVV = (cvv) => {
+    return !!(cvv.length === 3);
+  };
+  const checkDisabled = () => {
+    if (expiryDate && cvv && cardName && cardNumber) {
+      if (!validDate(expiryDate)) {
+        return true;
+      }
+      if (!validateCVV(cvv)) return true;
+      return false;
+    }
+    return true;
+  };
   return (
-    <div className={styles.formWrapper}>
+    <form
+      className={styles.formWrapper}
+      onSubmit={() => nextStep({ cardName, cardNumber, expiryDate, cvv })}
+    >
       <div className={styles.header}>
         <div className={styles.title}>Buy with Card</div>
       </div>
@@ -218,15 +247,15 @@ export const BuyDagFormStep1: React.FC<BDF1Prop> = ({ nextStep }: BDF1Prop) => {
           />
         </div>
         <Button
-          type="button"
+          type="submit"
           theme="primary"
           variant={styles.button}
-          onClick={() => nextStep({ cardName, cardNumber, expiryDate, cvv })}
+          disabled={checkDisabled()}
         >
           Next
         </Button>
       </div>
-    </div>
+    </form>
   );
 };
 
