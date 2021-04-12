@@ -271,6 +271,12 @@ export const BuyDagFormStep2: React.FC<BDF2Prop> = ({
   const { country, address, city, postalCode } = useSelector(
     (root: RootState) => root.buyDag,
   );
+  const checkDisabled = () => {
+    if (country && address && city && postalCode) {
+      return false;
+    }
+    return true;
+  };
   return (
     <div className={styles.formWrapper}>
       <div className={styles.header}>
@@ -338,6 +344,7 @@ export const BuyDagFormStep2: React.FC<BDF2Prop> = ({
             theme="success"
             variant={styles.button}
             onClick={() => nextStep({ country, address, city, postalCode })}
+            disabled={checkDisabled()}
           >
             Pay Now
           </Button>
