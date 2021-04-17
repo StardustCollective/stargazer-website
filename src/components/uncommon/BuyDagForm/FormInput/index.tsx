@@ -4,13 +4,16 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import ExpandLessIcon from "@material-ui/icons/ExpandLess";
 
 import styles from "./index.module.scss";
-import { stat } from "node:fs";
 
 interface IProps {
   label: string;
   placeholder?: string;
   visa?: boolean;
   country?: boolean;
+  value?: string;
+  error?: boolean;
+  errMsg?: string;
+  onChange?: (e) => void;
 }
 
 export const FormInput: React.FC<IProps> = ({
@@ -18,6 +21,10 @@ export const FormInput: React.FC<IProps> = ({
   label,
   visa,
   country,
+  value,
+  // error,
+  // errMsg,
+  onChange,
 }: IProps) => {
   const [selected, setSelected] = useState("");
   const [dropdownStatus, setDropdownStatus] = useState(false);
@@ -39,7 +46,11 @@ export const FormInput: React.FC<IProps> = ({
         <>
           <ReactFlagsSelect
             selected={selected}
-            onSelect={(code) => setSelected(code)}
+            onSelect={(code) => {
+              console.log(code);
+              setSelected(code);
+              onChange(code);
+            }}
             className={styles.countrySelector}
           />
           {dropdownStatus ? (
@@ -53,6 +64,8 @@ export const FormInput: React.FC<IProps> = ({
           type="text"
           placeholder={placeholder}
           className={visa ? styles.creditCard : ""}
+          onChange={onChange}
+          value={value}
         />
       )}
       {visa && (
@@ -61,6 +74,11 @@ export const FormInput: React.FC<IProps> = ({
           <img className={styles.visacard} src="/icons/visa-card.svg" />
         </>
       )}
+      {/* {error && (
+        <div className={styles.error}>
+          <span className={styles.errMsg}>{errMsg}</span>
+        </div>
+      )} */}
     </div>
   );
 };

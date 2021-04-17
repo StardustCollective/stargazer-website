@@ -1,1 +1,1 @@
-export { increase, decrease } from "@redux/slices/counter";
+export { setState } from "@redux/slices/buy-dag";
