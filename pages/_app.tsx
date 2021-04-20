@@ -4,7 +4,7 @@ import "@styles/global.scss";
 import "@styles/index.scss";
 import { Provider } from "react-redux";
 import store from "@redux/store";
-import { appWithTranslation } from "@i18n";
+// import { appWithTranslation } from "@i18n";
 
 function MyApp({ Component, pageProps }: AppProps): JSX.Element {
   return (
@@ -14,4 +14,5 @@ function MyApp({ Component, pageProps }: AppProps): JSX.Element {
   );
 }
 
-export default appWithTranslation(MyApp);
+// export default appWithTranslation(MyApp);
+export default MyApp;
