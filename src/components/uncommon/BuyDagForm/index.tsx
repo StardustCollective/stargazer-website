@@ -179,6 +179,9 @@ export const BuyDagFormStep1: React.FC<BDF1Prop> = ({ nextStep }: BDF1Prop) => {
   };
   const checkDisabled = () => {
     if (expiryDate && cvv && cardName && cardNumber) {
+      if (cardName.length === 0) {
+        return true;
+      }
       if (!validDate(expiryDate)) {
         return true;
       }
