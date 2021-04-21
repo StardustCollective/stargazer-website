@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import classnames from "classnames";
 import clm from "country-locale-map";
@@ -129,14 +129,14 @@ export const BuyDagForm: React.FC<BDFProp> = ({ nextStep }: BDFProp) => {
           logoUrl="/icons/usd.svg"
           currency="USD"
           onValueChange={handleUsdValueChange}
-          value={usdValue.toString()}
+          value={usdValue !== 0 ? usdValue.toString() : ""}
         />
         <FormItem
           label="Buy"
           logoUrl="/icons/dag.svg"
           currency="DAG"
           onValueChange={handleDagValueChange}
-          value={dagValue.toString()}
+          value={dagValue !== 0 ? dagValue.toString() : ""}
         />
         <Card />
         <Button
@@ -158,7 +158,7 @@ interface BDF1Prop {
 }
 export const BuyDagFormStep1: React.FC<BDF1Prop> = ({ nextStep }: BDF1Prop) => {
   const dispatch = useDispatch();
-  const { cardName, cardNumber, expiryDate, cvv } = useSelector(
+  const { cardName, cardNumber, expiryDate, cvv, email } = useSelector(
     (root: RootState) => root.buyDag,
   );
   const validDate = (dValue) => {
@@ -177,15 +177,20 @@ export const BuyDagFormStep1: React.FC<BDF1Prop> = ({ nextStep }: BDF1Prop) => {
   const validateCVV = (cvv) => {
     return !!(cvv.length === 3 || cvv.length === 4);
   };
+  const validateEmail = (email) => {
+    const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(email).toLowerCase());
+  };
   const checkDisabled = () => {
-    if (expiryDate && cvv && cardName && cardNumber) {
-      if (cardName.length === 0) {
+    if (expiryDate && cvv && cardName && cardNumber && email) {
+      if (
+        cardName.length === 0 ||
+        !validDate(expiryDate) ||
+        !validateEmail(email) ||
+        !validateCVV(cvv)
+      ) {
         return true;
       }
-      if (!validDate(expiryDate)) {
-        return true;
-      }
-      if (!validateCVV(cvv)) return true;
       return false;
     }
     return true;
@@ -199,7 +204,7 @@ export const BuyDagFormStep1: React.FC<BDF1Prop> = ({ nextStep }: BDF1Prop) => {
         <div className={styles.title}>Buy with Card</div>
       </div>
       <div className={styles.body}>
-        <StepMarker currentStep={1} />
+        {/* <StepMarker currentStep={1} /> */}
         <FormInput
           label="Name on Card"
           value={cardName}
@@ -281,13 +286,25 @@ export const BuyDagFormStep1: React.FC<BDF1Prop> = ({ nextStep }: BDF1Prop) => {
             }}
           />
         </div>
+        <FormInput
+          label="E-mail"
+          value={email}
+          placeholder="johndoe@example.com"
+          onChange={(e) =>
+            dispatch(
+              setState({
+                email: e.target.value,
+              }),
+            )
+          }
+        />
         <Button
           type="submit"
-          theme="primary"
+          theme="success"
           variant={styles.button}
           disabled={checkDisabled()}
         >
-          Next
+          Pay Now
         </Button>
       </div>
     </form>
@@ -384,6 +401,21 @@ export const BuyDagFormStep2: React.FC<BDF2Prop> = ({
             Pay Now
           </Button>
         </div>
+      </div>
+    </div>
+  );
+};
+
+interface TransactionReceiptProp {
+  loading: boolean;
+}
+export const TransactionReceipt: React.FC<TransactionReceiptProp> = ({
+  loading,
+}: TransactionReceiptProp) => {
+  return (
+    <div className={styles.formWrapper}>
+      <div className={styles.header}>
+        <div className={styles.title}>Transaction receipt</div>
       </div>
     </div>
   );

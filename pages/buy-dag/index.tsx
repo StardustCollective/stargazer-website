@@ -6,7 +6,8 @@ import { Layout } from "@components/common";
 import {
   BuyDagForm,
   BuyDagFormStep1,
-  BuyDagFormStep2,
+  // BuyDagFormStep2,
+  TransactionReceipt,
 } from "@components/uncommon/BuyDagForm";
 
 import styles from "./index.module.scss";
@@ -79,10 +80,12 @@ const BuyDag: React.FC = () => {
             nextStep={({ cardName, cardNumber, expiryDate, cvv }) => {
               console.log({ cardName, cardNumber, expiryDate, cvv });
               setStep(3);
+              handleSubmitRequest();
             }}
           />
         )}
-        {step === 3 && (
+        {step === 3 && <TransactionReceipt loading={true} />}
+        {/* {step === 3 && (
           <BuyDagFormStep2
             prevStep={() => setStep(2)}
             nextStep={({ country, address, city, postalCode }) => {
@@ -90,7 +93,7 @@ const BuyDag: React.FC = () => {
               handleSubmitRequest();
             }}
           />
-        )}
+        )} */}
       </div>
     </Layout>
   );
