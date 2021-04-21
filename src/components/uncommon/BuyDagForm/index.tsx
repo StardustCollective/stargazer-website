@@ -175,7 +175,7 @@ export const BuyDagFormStep1: React.FC<BDF1Prop> = ({ nextStep }: BDF1Prop) => {
     // if (result) alert("Please enter a valid date in MM/YY format.");
   };
   const validateCVV = (cvv) => {
-    return !!(cvv.length === 3);
+    return !!(cvv.length === 3 || cvv.length === 4);
   };
   const checkDisabled = () => {
     if (expiryDate && cvv && cardName && cardNumber) {
@@ -264,13 +264,18 @@ export const BuyDagFormStep1: React.FC<BDF1Prop> = ({ nextStep }: BDF1Prop) => {
             label="CVV"
             placeholder="CVV"
             value={cvv}
-            onChange={(e) =>
-              dispatch(
-                setState({
-                  cvv: e.target.value,
-                }),
-              )
-            }
+            onChange={(e) => {
+              if (
+                (e.nativeEvent.data > "0" && e.nativeEvent.data <= "9") ||
+                e.nativeEvent.data === null
+              ) {
+                dispatch(
+                  setState({
+                    cvv: e.target.value,
+                  }),
+                );
+              }
+            }}
           />
         </div>
         <Button
