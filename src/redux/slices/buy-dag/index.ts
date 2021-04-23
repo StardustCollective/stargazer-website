@@ -7,6 +7,7 @@ interface IBuyDag {
   cardNumber: string;
   expiryDate: string;
   cvv: string;
+  email: string;
   country: string;
   address: string;
   city: string;
@@ -20,6 +21,7 @@ const initialState: IBuyDag = {
   cardName: "",
   expiryDate: "",
   cvv: "",
+  email: "",
   country: "",
   address: "",
   city: "",

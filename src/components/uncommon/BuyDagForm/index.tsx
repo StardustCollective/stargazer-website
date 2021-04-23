@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import classnames from "classnames";
 import clm from "country-locale-map";
 
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import CreditCardIcon from "@material-ui/icons/CreditCard";
+import HourglassEmptyIcon from "@material-ui/icons/HourglassEmpty";
+import SwapHorizIcon from "@material-ui/icons/SwapHoriz";
 
 import { setState } from "@redux/actions";
 import { RootState } from "@redux/reducers";
@@ -129,14 +131,14 @@ export const BuyDagForm: React.FC<BDFProp> = ({ nextStep }: BDFProp) => {
           logoUrl="/icons/usd.svg"
           currency="USD"
           onValueChange={handleUsdValueChange}
-          value={usdValue.toString()}
+          value={usdValue !== 0 ? usdValue.toString() : ""}
         />
         <FormItem
           label="Buy"
           logoUrl="/icons/dag.svg"
           currency="DAG"
           onValueChange={handleDagValueChange}
-          value={dagValue.toString()}
+          value={dagValue !== 0 ? dagValue.toString() : ""}
         />
         <Card />
         <Button
@@ -158,7 +160,7 @@ interface BDF1Prop {
 }
 export const BuyDagFormStep1: React.FC<BDF1Prop> = ({ nextStep }: BDF1Prop) => {
   const dispatch = useDispatch();
-  const { cardName, cardNumber, expiryDate, cvv } = useSelector(
+  const { cardName, cardNumber, expiryDate, cvv, email } = useSelector(
     (root: RootState) => root.buyDag,
   );
   const validDate = (dValue) => {
@@ -175,14 +177,22 @@ export const BuyDagFormStep1: React.FC<BDF1Prop> = ({ nextStep }: BDF1Prop) => {
     // if (result) alert("Please enter a valid date in MM/YY format.");
   };
   const validateCVV = (cvv) => {
-    return !!(cvv.length === 3);
+    return !!(cvv.length === 3 || cvv.length === 4);
+  };
+  const validateEmail = (email) => {
+    const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(email).toLowerCase());
   };
   const checkDisabled = () => {
-    if (expiryDate && cvv && cardName && cardNumber) {
-      if (!validDate(expiryDate)) {
+    if (expiryDate && cvv && cardName && cardNumber && email) {
+      if (
+        cardName.length === 0 ||
+        !validDate(expiryDate) ||
+        !validateEmail(email) ||
+        !validateCVV(cvv)
+      ) {
         return true;
       }
-      if (!validateCVV(cvv)) return true;
       return false;
     }
     return true;
@@ -196,7 +206,7 @@ export const BuyDagFormStep1: React.FC<BDF1Prop> = ({ nextStep }: BDF1Prop) => {
         <div className={styles.title}>Buy with Card</div>
       </div>
       <div className={styles.body}>
-        <StepMarker currentStep={1} />
+        {/* <StepMarker currentStep={1} /> */}
         <FormInput
           label="Name on Card"
           value={cardName}
@@ -225,34 +235,78 @@ export const BuyDagFormStep1: React.FC<BDF1Prop> = ({ nextStep }: BDF1Prop) => {
             label="Expiry Date"
             placeholder="MM/YY"
             value={expiryDate}
-            onChange={(e) =>
+            onChange={(event) => {
+              const value = event.target.value
+                .replace(
+                  /^([1-9]\/|[2-9])$/g,
+                  "0$1/", // 3 > 03/
+                )
+                .replace(
+                  /^(0[1-9]|1[0-2])$/g,
+                  "$1/", // 11 > 11/
+                )
+                .replace(
+                  /^1([3-9])$/g,
+                  "01/$1", // 13 > 01/3 //UPDATED by NAVNEET
+                  // ).replace(
+                  //   /^(0?[1-9]|1[0-2])([0-9]{2})$/g, '$1/$2' // 141 > 01/41
+                )
+                .replace(
+                  /^0\/|0+$/g,
+                  "0", // 0/ > 0 and 00 > 0 //UPDATED by NAVNEET
+                )
+                .replace(
+                  /[^\d|^/]*/g,
+                  "", // To allow only digits and `/` //UPDATED by NAVNEET
+                )
+                .replace(
+                  /\/\//g,
+                  "/", // Prevent entering more than 1 `/`
+                );
               dispatch(
                 setState({
-                  expiryDate: e.target.value,
+                  expiryDate: value,
                 }),
-              )
-            }
+              );
+            }}
           />
           <FormInput
             label="CVV"
             placeholder="CVV"
             value={cvv}
-            onChange={(e) =>
-              dispatch(
-                setState({
-                  cvv: e.target.value,
-                }),
-              )
-            }
+            onChange={(e) => {
+              if (
+                (e.nativeEvent.data > "0" && e.nativeEvent.data <= "9") ||
+                e.nativeEvent.data === null
+              ) {
+                dispatch(
+                  setState({
+                    cvv: e.target.value,
+                  }),
+                );
+              }
+            }}
           />
         </div>
+        <FormInput
+          label="E-mail"
+          value={email}
+          placeholder="johndoe@example.com"
+          onChange={(e) =>
+            dispatch(
+              setState({
+                email: e.target.value,
+              }),
+            )
+          }
+        />
         <Button
           type="submit"
-          theme="primary"
+          theme="success"
           variant={styles.button}
           disabled={checkDisabled()}
         >
-          Next
+          Pay Now
         </Button>
       </div>
     </form>
@@ -349,6 +403,66 @@ export const BuyDagFormStep2: React.FC<BDF2Prop> = ({
             Pay Now
           </Button>
         </div>
+      </div>
+    </div>
+  );
+};
+
+interface TransactionReceiptProp {
+  loading: boolean;
+}
+export const TransactionReceipt: React.FC<TransactionReceiptProp> = ({
+  loading,
+}: TransactionReceiptProp) => {
+  return (
+    <div className={styles.formWrapper}>
+      <div className={styles.header}>
+        <div className={styles.title}>Transaction receipt</div>
+      </div>
+      <div
+        className={classnames(styles.body, styles.transactionReceipt, {
+          [styles.loading]: loading,
+        })}
+      >
+        {loading && (
+          <>
+            <HourglassEmptyIcon />
+            <span>Waiting for Tokens</span>
+          </>
+        )}
+        {!loading && (
+          <>
+            <div className={styles.trWrapper}>
+              <div className={styles.trItem}>
+                <p className={styles.title}>$DAG amount</p>
+                <span className={styles.description}>10000 $DAG </span>
+              </div>
+              <SwapHorizIcon />
+              <div className={classnames(styles.trItem, styles.trMargin)}>
+                <p className={styles.title}>Paid</p>
+                <span className={styles.description}>$600 USD </span>
+              </div>
+            </div>
+
+            <div className={styles.trItem}>
+              <p className={styles.title}>Receipt ID</p>
+              <span className={styles.description}>
+                b160c49f009c1ec99abe944a957c260c03f7200b4959eee229f2de7f1db3fcf1
+              </span>
+            </div>
+            <div className={styles.trItem}>
+              <p className={styles.title}>New $DAG Balance</p>
+              <span className={styles.description}>510000 $DAG</span>
+            </div>
+            <div className={classnames(styles.trItem, styles.noBorder)}>
+              <p className={styles.title}>Timestamp</p>
+              <span className={styles.description}>Apr 17 2021 3:50:01 pm</span>
+            </div>
+            <Button type="button" theme="primary" variant={styles.button}>
+              DONE
+            </Button>
+          </>
+        )}
       </div>
     </div>
   );

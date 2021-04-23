@@ -6,7 +6,8 @@ import { Layout } from "@components/common";
 import {
   BuyDagForm,
   BuyDagFormStep1,
-  BuyDagFormStep2,
+  // BuyDagFormStep2,
+  TransactionReceipt,
 } from "@components/uncommon/BuyDagForm";
 
 import styles from "./index.module.scss";
@@ -19,26 +20,18 @@ const BuyDag: React.FC = () => {
     cardNumber,
     expiryDate,
     cvv,
-    country,
-    address,
-    city,
-    postalCode,
+    email,
   } = useSelector((root: RootState) => root.buyDag);
+  const [transactionLoading, setTransactionLoading] = useState(false);
+  const [step, setStep] = useState(1);
 
   const handleSubmitRequest = () => {
     const body = {
       order: { token: "DAG", quantity: dagValue, amountUSD: usdValue },
       customer: {
-        email: "1",
+        email: email,
         firstName: "1",
         lastName: "1",
-        address: {
-          name: "1",
-          line1: "1",
-          city: city,
-          state: country,
-          zip: postalCode,
-        },
       },
       paymethod: {
         number: cardNumber,
@@ -46,7 +39,7 @@ const BuyDag: React.FC = () => {
         name: cardName,
         expYear: `20${expiryDate.split("/")[1]}`,
         expMonth: expiryDate.split("/")[0],
-        zip: postalCode,
+        zip: "",
       },
     };
     fetch("https://www.stargazer.network/api/v1/buy-dag/purchase", {
@@ -57,12 +50,13 @@ const BuyDag: React.FC = () => {
       body: JSON.stringify(body),
     })
       .then(async (res) => {
-        console.log(await res.json());
+        const result = await res.json();
+        console.log(result);
+        setTransactionLoading(false);
       })
       .catch((err) => console.log(err));
   };
 
-  const [step, setStep] = useState(1);
   return (
     <Layout>
       <div className={styles.pageWrapper}>
@@ -79,10 +73,13 @@ const BuyDag: React.FC = () => {
             nextStep={({ cardName, cardNumber, expiryDate, cvv }) => {
               console.log({ cardName, cardNumber, expiryDate, cvv });
               setStep(3);
+              handleSubmitRequest();
+              setTransactionLoading(true);
             }}
           />
         )}
-        {step === 3 && (
+        {step === 3 && <TransactionReceipt loading={transactionLoading} />}
+        {/* {step === 3 && (
           <BuyDagFormStep2
             prevStep={() => setStep(2)}
             nextStep={({ country, address, city, postalCode }) => {
@@ -90,7 +87,7 @@ const BuyDag: React.FC = () => {
               handleSubmitRequest();
             }}
           />
-        )}
+        )} */}
       </div>
     </Layout>
   );
