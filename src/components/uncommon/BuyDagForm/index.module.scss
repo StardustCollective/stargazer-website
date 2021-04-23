@@ -137,6 +137,7 @@
         color: $primary-600;
       }
       &.loading {
+        justify-content: center !important;
         span {
           position: absolute;
           top: 220px;

@@ -23,7 +23,7 @@ const BuyDag: React.FC = () => {
     email,
   } = useSelector((root: RootState) => root.buyDag);
   const [transactionLoading, setTransactionLoading] = useState(false);
-  const [step, setStep] = useState(3);
+  const [step, setStep] = useState(1);
 
   const handleSubmitRequest = () => {
     const body = {
