@@ -128,5 +128,64 @@
         bottom: 0;
       }
     }
+    &.transactionReceipt {
+      justify-content: flex-start;
+      align-items: center;
+      display: flex;
+      flex-direction: column;
+      svg {
+        color: $primary-600;
+      }
+      &.loading {
+        span {
+          position: absolute;
+          top: 220px;
+          font-family: Roboto;
+          font-style: normal;
+          font-weight: normal;
+          font-size: 12px;
+          line-height: 14px;
+        }
+      }
+      .trWrapper {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        .trItem {
+          padding: 0;
+        }
+      }
+      .trItem {
+        width: 100%;
+        border-bottom: 1px solid #f5f5f5;
+        padding: 16px 0;
+        box-sizing: border-box;
+        &.noBorder {
+          border: none;
+        }
+        &.trMargin {
+          padding-left: 15px;
+        }
+        .title {
+          font-family: Inter;
+          font-style: normal;
+          font-weight: 500;
+          font-size: 10px;
+          line-height: 12px;
+          color: $black;
+          margin-top: 0;
+          margin-bottom: 8px;
+        }
+        .description {
+          font-family: Inter;
+          font-style: normal;
+          font-weight: 500;
+          font-size: 12px;
+          line-height: 15px;
+          overflow-wrap: break-word;
+          color: $gray-dark;
+        }
+      }
+    }
   }
 }

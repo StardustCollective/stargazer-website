@@ -5,6 +5,8 @@ import clm from "country-locale-map";
 
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import CreditCardIcon from "@material-ui/icons/CreditCard";
+import HourglassEmptyIcon from "@material-ui/icons/HourglassEmpty";
+import SwapHorizIcon from "@material-ui/icons/SwapHoriz";
 
 import { setState } from "@redux/actions";
 import { RootState } from "@redux/reducers";
@@ -416,6 +418,51 @@ export const TransactionReceipt: React.FC<TransactionReceiptProp> = ({
     <div className={styles.formWrapper}>
       <div className={styles.header}>
         <div className={styles.title}>Transaction receipt</div>
+      </div>
+      <div
+        className={classnames(styles.body, styles.transactionReceipt, {
+          [styles.loading]: loading,
+        })}
+      >
+        {loading && (
+          <>
+            <HourglassEmptyIcon />
+            <span>Waiting for Tokens</span>
+          </>
+        )}
+        {!loading && (
+          <>
+            <div className={styles.trWrapper}>
+              <div className={styles.trItem}>
+                <p className={styles.title}>$DAG amount</p>
+                <span className={styles.description}>10000 $DAG </span>
+              </div>
+              <SwapHorizIcon />
+              <div className={classnames(styles.trItem, styles.trMargin)}>
+                <p className={styles.title}>Paid</p>
+                <span className={styles.description}>$600 USD </span>
+              </div>
+            </div>
+
+            <div className={styles.trItem}>
+              <p className={styles.title}>Receipt ID</p>
+              <span className={styles.description}>
+                b160c49f009c1ec99abe944a957c260c03f7200b4959eee229f2de7f1db3fcf1
+              </span>
+            </div>
+            <div className={styles.trItem}>
+              <p className={styles.title}>New $DAG Balance</p>
+              <span className={styles.description}>510000 $DAG</span>
+            </div>
+            <div className={classnames(styles.trItem, styles.noBorder)}>
+              <p className={styles.title}>Timestamp</p>
+              <span className={styles.description}>Apr 17 2021 3:50:01 pm</span>
+            </div>
+            <Button type="button" theme="primary" variant={styles.button}>
+              DONE
+            </Button>
+          </>
+        )}
       </div>
     </div>
   );
