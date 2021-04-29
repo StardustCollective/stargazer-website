@@ -1,5 +1,4 @@
 import React from "react";
-import Image from "next/image";
 import AppsSharpIcon from "@material-ui/icons/AppsSharp";
 import { IconButton } from "@material-ui/core";
 import { Button } from "@components/common/button/index";
@@ -12,7 +11,7 @@ export const Header: React.FC = () => {
   return (
     <div className={styles.header}>
       <div className={styles.left}>
-        <Image
+        <img
           className={styles.logo}
           src="/images/logo.png"
           alt="logo"
