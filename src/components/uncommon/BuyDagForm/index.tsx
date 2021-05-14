@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import classnames from "classnames";
 import clm from "country-locale-map";
@@ -163,6 +163,11 @@ export const BuyDagFormStep1: React.FC<BDF1Prop> = ({ nextStep }: BDF1Prop) => {
   const { cardName, cardNumber, expiryDate, cvv, email } = useSelector(
     (root: RootState) => root.buyDag,
   );
+  const [errCardName, setErrCardName] = useState("");
+  const [errCardNumber, setErrCardNumber] = useState("");
+  const [errExpDate, setErrExpDate] = useState("");
+  const [errCvv, setErrCvv] = useState("");
+  const [errEmail, setErrEmail] = useState("");
   const validDate = (dValue) => {
     let result = false;
     const pattern = /^\d{2}$/;
@@ -187,6 +192,7 @@ export const BuyDagFormStep1: React.FC<BDF1Prop> = ({ nextStep }: BDF1Prop) => {
     if (expiryDate && cvv && cardName && cardNumber && email) {
       if (
         cardName.length === 0 ||
+        cardNumber.length !== 16 ||
         !validDate(expiryDate) ||
         !validateEmail(email) ||
         !validateCVV(cvv)
@@ -210,23 +216,37 @@ export const BuyDagFormStep1: React.FC<BDF1Prop> = ({ nextStep }: BDF1Prop) => {
         <FormInput
           label="Name on Card"
           value={cardName}
-          onChange={(e) =>
+          error={errCardName !== ""}
+          errMsg={errCardName}
+          onChange={(e) => {
+            if (e.target.value.length === 0) {
+              setErrCardName("Card Name required");
+            } else {
+              setErrCardName("");
+            }
             dispatch(
               setState({
                 cardName: e.target.value,
               }),
-            )
-          }
+            );
+          }}
         />
         <FormInput
           label="Card Number"
           visa={true}
           value={cardNumber}
+          error={errCardNumber !== ""}
+          errMsg={errCardNumber}
           onChange={(e) => {
             if (
-              (e.nativeEvent.data > "0" && e.nativeEvent.data <= "9") ||
+              (e.nativeEvent.data >= "0" && e.nativeEvent.data <= "9") ||
               e.nativeEvent.data === null
             ) {
+              if (e.target.value.length !== 16) {
+                setErrCardNumber("Card Number should be 16 digit");
+              } else {
+                setErrCardNumber("");
+              }
               dispatch(
                 setState({
                   cardNumber: e.target.value,
@@ -240,6 +260,8 @@ export const BuyDagFormStep1: React.FC<BDF1Prop> = ({ nextStep }: BDF1Prop) => {
             label="Expiry Date"
             placeholder="MM/YY"
             value={expiryDate}
+            error={errExpDate !== ""}
+            errMsg={errExpDate}
             onChange={(event) => {
               const value = event.target.value
                 .replace(
@@ -268,6 +290,11 @@ export const BuyDagFormStep1: React.FC<BDF1Prop> = ({ nextStep }: BDF1Prop) => {
                   /\/\//g,
                   "/", // Prevent entering more than 1 `/`
                 );
+              if (!validDate(value)) {
+                setErrExpDate("Invalid format");
+              } else {
+                setErrExpDate("");
+              }
               dispatch(
                 setState({
                   expiryDate: value,
@@ -284,6 +311,11 @@ export const BuyDagFormStep1: React.FC<BDF1Prop> = ({ nextStep }: BDF1Prop) => {
                 (e.nativeEvent.data > "0" && e.nativeEvent.data <= "9") ||
                 e.nativeEvent.data === null
               ) {
+                if (!validateCVV(e.target.value)) {
+                  setErrCvv("CVV is invalid");
+                } else {
+                  setErrCvv("");
+                }
                 dispatch(
                   setState({
                     cvv: e.target.value,
@@ -291,19 +323,28 @@ export const BuyDagFormStep1: React.FC<BDF1Prop> = ({ nextStep }: BDF1Prop) => {
                 );
               }
             }}
+            error={errCvv !== ""}
+            errMsg={errCvv}
           />
         </div>
         <FormInput
           label="E-mail"
           value={email}
           placeholder="johndoe@example.com"
-          onChange={(e) =>
+          error={errEmail !== ""}
+          errMsg={errEmail}
+          onChange={(e) => {
+            if (!validateEmail(e.target.value)) {
+              setErrEmail("E-mail format is invalid");
+            } else {
+              setErrEmail("");
+            }
             dispatch(
               setState({
                 email: e.target.value,
               }),
-            )
-          }
+            );
+          }}
         />
         <Button
           type="submit"

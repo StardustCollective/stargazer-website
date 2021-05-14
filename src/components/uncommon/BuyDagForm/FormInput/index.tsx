@@ -1,4 +1,5 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
+import classnames from "classnames";
 import ReactFlagsSelect from "react-flags-select";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import ExpandLessIcon from "@material-ui/icons/ExpandLess";
@@ -22,8 +23,8 @@ export const FormInput: React.FC<IProps> = ({
   visa,
   country,
   value,
-  // error,
-  // errMsg,
+  error,
+  errMsg,
   onChange,
 }: IProps) => {
   const [selected, setSelected] = useState("");
@@ -31,6 +32,7 @@ export const FormInput: React.FC<IProps> = ({
   const handleDropdown = () => {
     setDropdownStatus((status) => !status);
   };
+
   useEffect(() => {
     if (country) {
       const el = document.getElementById("rfs-btn");
@@ -39,9 +41,13 @@ export const FormInput: React.FC<IProps> = ({
       }
     }
   }, []);
+
   return (
     <div className={styles.formInput}>
-      <span className={styles.label}>{label}</span>
+      <span className={classnames(styles.label, { [styles.error]: error })}>
+        {label}
+        {error && <span>{` (${errMsg})`}</span>}
+      </span>
       {country ? (
         <>
           <ReactFlagsSelect
@@ -63,7 +69,9 @@ export const FormInput: React.FC<IProps> = ({
         <input
           type="text"
           placeholder={placeholder}
-          className={visa ? styles.creditCard : ""}
+          className={classnames(visa ? styles.creditCard : "", {
+            [styles.error]: error,
+          })}
           onChange={onChange}
           value={value}
         />
