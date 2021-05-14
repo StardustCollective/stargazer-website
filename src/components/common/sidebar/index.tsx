@@ -13,36 +13,36 @@ export const Sidebar: React.FC = () => {
   return (
     <div className={styles.sidebar}>
       <div className={styles.body}>
-        <Link href="/connect-wallet">
-          <div className={styles.item}>
-            <AccountBalanceWalletIcon />
-            <span className={styles.label}>Connect Wallet</span>
-          </div>
-        </Link>
+        {/*<Link href="/connect-wallet">*/}
+        {/*  <div className={styles.item}>*/}
+        {/*    <AccountBalanceWalletIcon />*/}
+        {/*    <span className={styles.label}>Connect Wallet</span>*/}
+        {/*  </div>*/}
+        {/*</Link>*/}
         <Link href="/buy-dag">
           <div className={styles.item}>
             <CreditCardIcon />
             <span className={styles.label}>Buy DAG</span>
           </div>
         </Link>
-        <Link href="/portfolio">
-          <div className={styles.item}>
-            <PersonIcon />
-            <span className={styles.label}>Portfolio</span>
-          </div>
-        </Link>
-        <Link href="/swap">
-          <div className={styles.item}>
-            <SwapCallsIcon />
-            <span className={styles.label}>Swap</span>
-          </div>
-        </Link>
-        <Link href="/terminal">
-          <div className={styles.item}>
-            <DashboardIcon />
-            <span className={styles.label}>Terminal</span>
-          </div>
-        </Link>
+        {/*<Link href="/portfolio">*/}
+        {/*  <div className={styles.item}>*/}
+        {/*    <PersonIcon />*/}
+        {/*    <span className={styles.label}>Portfolio</span>*/}
+        {/*  </div>*/}
+        {/*</Link>*/}
+        {/*<Link href="/swap">*/}
+        {/*  <div className={styles.item}>*/}
+        {/*    <SwapCallsIcon />*/}
+        {/*    <span className={styles.label}>Swap</span>*/}
+        {/*  </div>*/}
+        {/*</Link>*/}
+        {/*<Link href="/terminal">*/}
+        {/*  <div className={styles.item}>*/}
+        {/*    <DashboardIcon />*/}
+        {/*    <span className={styles.label}>Terminal</span>*/}
+        {/*  </div>*/}
+        {/*</Link>*/}
       </div>
       <div className={styles.footer}>
         <div className={styles.item}>

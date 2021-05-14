@@ -1,0 +1,11 @@
+.idea
+.git
+.vscode
+__tests__
+.DS_Store
+.dockerignore
+.gitignore
+bak/
+node_modules/
+out/
+*.dylib

@@ -345,7 +345,8 @@ const TermsConditions: React.FC = () => {
             contact us:
           </p>
           <p className={styles.TYPO_XSMALL}>
-            By visiting this page on our website: https://t.me/StardustSupport
+            By visiting this page on our website:{" "}
+            <a target="_blank" href="https://t.me/StardustSupport"></a>
           </p>
         </div>
       </div>

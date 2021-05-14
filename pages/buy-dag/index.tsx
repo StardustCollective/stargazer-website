@@ -25,36 +25,80 @@ const BuyDag: React.FC = () => {
   const [transactionLoading, setTransactionLoading] = useState(false);
   const [step, setStep] = useState(1);
 
+  const handleEthSignMessage = (message) => {
+    return window["ethereum"]
+      .request({ method: "eth_requestAccounts" })
+      .then((accounts) => accounts[0])
+      .then((currentAccount) => {
+        return window["ethereum"]
+          .request({
+            method: "personal_sign",
+            params: [message, currentAccount, ""],
+          })
+          .then((sig) => {
+            sig = sig.startsWith("0x") ? sig.slice(2) : sig;
+            console.log("SIG", sig);
+            return { address: currentAccount, sig };
+          });
+      });
+  };
+
+  const handleDagSignMessage = (message) => {
+    return window["stargazer"]
+      .request({ method: "getAddress" })
+      .then((currentAccount) => {
+        return window["stargazer"]
+          .request({
+            method: "signMessage",
+            params: [message, currentAccount],
+          })
+          .then((sig) => {
+            console.log("SIG", sig);
+            return { address: currentAccount, sig };
+          });
+      });
+  };
+
   const handleSubmitRequest = () => {
-    const body = {
-      order: { token: "DAG", quantity: dagValue, amountUSD: usdValue },
-      customer: {
-        email: email,
-        firstName: "1",
-        lastName: "1",
-      },
-      paymethod: {
-        number: cardNumber,
-        cvv: cvv,
-        name: cardName,
-        expYear: `20${expiryDate.split("/")[1]}`,
-        expMonth: expiryDate.split("/")[0],
-        zip: "",
-      },
-    };
-    fetch("https://www.stargazer.network/api/v1/buy-dag/purchase", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(body),
-    })
-      .then(async (res) => {
-        const result = await res.json();
-        console.log(result);
-        setTransactionLoading(false);
+    const statement = `I am buying ${dagValue} DAG for ${usdValue} USD`;
+    handleEthSignMessage(statement).then(({ address, sig }) => {
+      const body = {
+        auth: { token: sig },
+        order: {
+          asset: "DAG",
+          quantity: dagValue,
+          amountUSD: usdValue,
+          tokenAddress: address,
+          statement,
+        },
+        customer: {
+          email: email,
+          firstName: "1",
+          lastName: "1",
+        },
+        paymethod: {
+          number: cardNumber,
+          cvv: cvv,
+          name: cardName,
+          expYear: `20${expiryDate.split("/")[1]}`,
+          expMonth: expiryDate.split("/")[0],
+          zip: "",
+        },
+      };
+      fetch("https://portal.stargazer.network/api/v1/buy-dag/purchase", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
       })
-      .catch((err) => console.log(err));
+        .then(async (res) => {
+          const result = await res.json();
+          console.log(result);
+          setTransactionLoading(false);
+        })
+        .catch((err) => console.log(err));
+    });
   };
 
   return (
