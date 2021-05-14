@@ -222,13 +222,18 @@ export const BuyDagFormStep1: React.FC<BDF1Prop> = ({ nextStep }: BDF1Prop) => {
           label="Card Number"
           visa={true}
           value={cardNumber}
-          onChange={(e) =>
-            dispatch(
-              setState({
-                cardNumber: e.target.value,
-              }),
-            )
-          }
+          onChange={(e) => {
+            if (
+              (e.nativeEvent.data > "0" && e.nativeEvent.data <= "9") ||
+              e.nativeEvent.data === null
+            ) {
+              dispatch(
+                setState({
+                  cardNumber: e.target.value,
+                }),
+              );
+            }
+          }}
         />
         <div className={styles.halfWrapper}>
           <FormInput
