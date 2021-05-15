@@ -22,6 +22,22 @@ export const Header: React.FC = () => {
   }, []);
 
   const handleClick = () => {
+    //handleEthEnable();
+    handleStargazerEnable();
+  };
+
+  const handleStargazerEnable = () => {
+    window["ethereum"]
+      .enable()
+      .then((account) => {
+        console.log("Successfully connected to Stargazer.", account);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  };
+
+  const handleEthEnable = () => {
     window["ethereum"]
       .request({ method: "eth_requestAccounts" })
       .then(handleAccountsChanged)

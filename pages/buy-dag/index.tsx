@@ -25,6 +25,44 @@ const BuyDag: React.FC = () => {
   const [transactionLoading, setTransactionLoading] = useState(false);
   const [step, setStep] = useState(1);
 
+  const [isConnected, setConnected] = useState<boolean>(false);
+  const [isWalletInstalled, setWalletInstalled] = useState<boolean>(false);
+  const [activeAccount, setActiveAccount] = useState<string>("");
+
+  const markAsInstalledAndCheckConnected = () => {
+    setWalletInstalled(true);
+
+    window["stargazer"].isConnected().then(() => setConnected(true));
+
+    // window["stargazer"].on("accountChanged", (account: string) => {
+    //   setActiveAccount(account);
+    // });
+  };
+
+  React.useEffect(() => {
+    if (window["stargazer"]) {
+      markAsInstalledAndCheckConnected();
+    } else {
+      setTimeout(() => {
+        if (window["stargazer"]) {
+          markAsInstalledAndCheckConnected();
+        }
+      }, 3000);
+    }
+  }, []);
+
+  const handleStargazerEnable = () => {
+    window["ethereum"]
+      .enable()
+      .then((account) => {
+        setActiveAccount(account);
+        console.log("Successfully connected to Stargazer.", account);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  };
+
   const handleEthSignMessage = (message) => {
     return window["ethereum"]
       .request({ method: "eth_requestAccounts" })
@@ -61,28 +99,25 @@ const BuyDag: React.FC = () => {
 
   const handleSubmitRequest = () => {
     const statement = `I am buying ${dagValue} DAG for ${usdValue} USD`;
-    handleEthSignMessage(statement).then(({ address, sig }) => {
+    handleDagSignMessage(statement).then(({ address, sig }) => {
       const body = {
         auth: { token: sig },
         order: {
           asset: "DAG",
-          quantity: dagValue,
-          amountUSD: usdValue,
+          quantity: +dagValue,
+          amountUSD: Math.floor(usdValue * 100),
           tokenAddress: address,
           statement,
         },
         customer: {
           email: email,
-          firstName: "1",
-          lastName: "1",
         },
         paymethod: {
           number: cardNumber,
           cvv: cvv,
           name: cardName,
-          expYear: `20${expiryDate.split("/")[1]}`,
-          expMonth: expiryDate.split("/")[0],
-          zip: "",
+          expYear: Number(`20${expiryDate.split("/")[1]}`),
+          expMonth: Number(expiryDate.split("/")[0]),
         },
       };
       fetch("https://portal.stargazer.network/api/v1/buy-dag/purchase", {
@@ -103,6 +138,11 @@ const BuyDag: React.FC = () => {
 
   return (
     <Layout>
+      <div>
+        <span>isInstalled: {isWalletInstalled}, </span>
+        <span>isConnected: {isConnected}, </span>
+        <span>activeAccount: {activeAccount}</span>
+      </div>
       <div className={styles.pageWrapper}>
         {step === 1 && (
           <BuyDagForm

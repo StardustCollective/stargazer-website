@@ -29,6 +29,9 @@ interface FIWProps {
   children: any;
   label: string;
 }
+
+const DAG_PRICE_URL = "https://www.stargazer.network/api/price?symbol=DAG-USDT";
+
 export const FormItemWrapper: React.FC<FIWProps> = ({
   children,
   label,
@@ -77,9 +80,15 @@ export const Card: React.FC = () => {
 interface BDFProp {
   nextStep: (usdValue, dagValue) => void;
 }
+
+type LastPrice = {
+  amount: number;
+  time: number;
+};
+
 export const BuyDagForm: React.FC<BDFProp> = ({ nextStep }: BDFProp) => {
-  const conversionRate = 0.06; /// 1 DAG is 0.06 USD
   const dispatch = useDispatch();
+  const [lastPrice, setLastPrice] = useState<LastPrice>({ amount: 0, time: 0 });
   const { usdValue, dagValue } = useSelector((root: RootState) => root.buyDag);
   const setUsdValue = (value) => {
     dispatch(
@@ -95,19 +104,31 @@ export const BuyDagForm: React.FC<BDFProp> = ({ nextStep }: BDFProp) => {
       }),
     );
   };
-  const handleUsdValueChange = (e) => {
+  const getDagPrice = async () => {
+    // console.log(lastPrice.time, Date.now());
+    if (lastPrice.time + 15000 > Date.now()) {
+      return lastPrice.amount;
+    }
+    const res = await fetch(DAG_PRICE_URL);
+    const b = await res.json();
+    const amount = +b.price;
+    setLastPrice({ amount, time: Date.now() });
+    return amount;
+  };
+  const handleUsdValueChange = async (e) => {
     const inputValue = e.target.value;
     if (inputValue === "" || inputValue === "0") {
       setDagValue(0);
       setUsdValue(0);
     } else if (isFinite(inputValue)) {
-      const nUsd = parseFloat(inputValue);
+      const nUsd = Math.min(2000, parseFloat(inputValue));
       setUsdValue(inputValue);
-      setDagValue((nUsd / conversionRate).toFixed(6));
+      const conversionRate = await getDagPrice();
+      setDagValue((nUsd / conversionRate).toFixed(8));
     }
   };
 
-  const handleDagValueChange = (e) => {
+  const handleDagValueChange = async (e) => {
     const inputValue = e.target.value;
     if (inputValue === "" || inputValue === "0") {
       setDagValue(0);
@@ -115,7 +136,8 @@ export const BuyDagForm: React.FC<BDFProp> = ({ nextStep }: BDFProp) => {
     } else if (isFinite(inputValue)) {
       const nDag = parseFloat(inputValue);
       setDagValue(inputValue);
-      setUsdValue((nDag * conversionRate).toFixed(6));
+      const conversionRate = await getDagPrice();
+      setUsdValue((nDag * conversionRate).toFixed(2));
     }
   };
 
