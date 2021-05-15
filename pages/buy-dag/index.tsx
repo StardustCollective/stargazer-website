@@ -11,6 +11,7 @@ import {
 } from "@components/uncommon/BuyDagForm";
 
 import styles from "./index.module.scss";
+import ConnectStargazer from "@components/uncommon/ConnectStargazer";
 
 const BuyDag: React.FC = () => {
   const {
@@ -32,7 +33,7 @@ const BuyDag: React.FC = () => {
   const markAsInstalledAndCheckConnected = () => {
     setWalletInstalled(true);
 
-    window["stargazer"].isConnected().then(() => setConnected(true));
+    window["stargazer"].isConnected().then((result) => setConnected(result));
 
     // window["stargazer"].on("accountChanged", (account: string) => {
     //   setActiveAccount(account);
@@ -136,23 +137,30 @@ const BuyDag: React.FC = () => {
     });
   };
 
-  return (
-    <Layout>
-      <div>
-        <span>isInstalled: {isWalletInstalled}, </span>
-        <span>isConnected: {isConnected}, </span>
-        <span>activeAccount: {activeAccount}</span>
-      </div>
-      <div className={styles.pageWrapper}>
-        {step === 1 && (
+  const renderForm = () => {
+    if (!isConnected) {
+      return (
+        <ConnectStargazer
+          installed={isWalletInstalled}
+          onConnect={() => {
+            setConnected(true);
+          }}
+        />
+      );
+    }
+
+    switch (step) {
+      case 1:
+        return (
           <BuyDagForm
             nextStep={(usdValue, dagValue) => {
               console.log(usdValue, dagValue);
               setStep(2);
             }}
           />
-        )}
-        {step === 2 && (
+        );
+      case 2:
+        return (
           <BuyDagFormStep1
             nextStep={({ cardName, cardNumber, expiryDate, cvv }) => {
               console.log({ cardName, cardNumber, expiryDate, cvv });
@@ -161,8 +169,21 @@ const BuyDag: React.FC = () => {
               setTransactionLoading(true);
             }}
           />
-        )}
-        {step === 3 && <TransactionReceipt loading={transactionLoading} />}
+        );
+      case 3:
+        <TransactionReceipt loading={transactionLoading} />;
+    }
+  };
+
+  return (
+    <Layout>
+      <div>
+        <span>isInstalled: {String(isWalletInstalled)}, </span>
+        <span>isConnected: {String(isConnected)}, </span>
+        <span>activeAccount: {String(activeAccount)}</span>
+      </div>
+      <div className={styles.pageWrapper}>
+        {renderForm()}
         {/* {step === 3 && (
           <BuyDagFormStep2
             prevStep={() => setStep(2)}
