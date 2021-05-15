@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import AppsSharpIcon from "@material-ui/icons/AppsSharp";
 import { IconButton } from "@material-ui/core";
-import { Button } from "@components/common/button/index";
+// import { Button } from "@components/common/button/index";
 import styles from "./index.module.scss";
 
 export const Header: React.FC = () => {
@@ -21,38 +21,38 @@ export const Header: React.FC = () => {
     }
   }, []);
 
-  const handleClick = () => {
-    //handleEthEnable();
-    handleStargazerEnable();
-  };
+  // const handleClick = () => {
+  //   //handleEthEnable();
+  //   handleStargazerEnable();
+  // };
 
-  const handleStargazerEnable = () => {
-    window["ethereum"]
-      .enable()
-      .then((account) => {
-        console.log("Successfully connected to Stargazer.", account);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  };
+  // const handleStargazerEnable = () => {
+  //   window["stargazer"]
+  //     .enable()
+  //     .then((account) => {
+  //       console.log("Successfully connected to Stargazer.", account);
+  //     })
+  //     .catch((err) => {
+  //       console.error(err);
+  //     });
+  // };
 
-  const handleEthEnable = () => {
-    window["ethereum"]
-      .request({ method: "eth_requestAccounts" })
-      .then(handleAccountsChanged)
-      .catch((err) => {
-        if (err.code === 4001) {
-          // EIP-1193 userRejectedRequest error
-          // If this happens, the user rejected the connection request.
-          console.log("Please connect to MetaMask.");
-        } else {
-          console.error(err);
-        }
-      });
-  };
+  // const handleEthEnable = () => {
+  //   window["ethereum"]
+  //     .request({ method: "eth_requestAccounts" })
+  //     .then(handleAccountsChanged)
+  //     .catch((err) => {
+  //       if (err.code === 4001) {
+  //         // EIP-1193 userRejectedRequest error
+  //         // If this happens, the user rejected the connection request.
+  //         console.log("Please connect to MetaMask.");
+  //       } else {
+  //         console.error(err);
+  //       }
+  //     });
+  // };
 
-  const handleAccountsChanged = (accounts) => {
+  const handleAccountsChanged = async (accounts) => {
     if (accounts.length === 0) {
       // MetaMask is locked or the user has not connected any accounts
       console.log("Please connect to MetaMask.");
@@ -62,8 +62,6 @@ export const Header: React.FC = () => {
       console.log("currentAccount", currentAccount);
     }
   };
-
-
 
   return (
     <div className={styles.header}>
@@ -83,7 +81,7 @@ export const Header: React.FC = () => {
         {/*<a className={styles.navItem}>Documentation</a>*/}
         {/*<span className={styles.splitter} />*/}
         {/*<a className={styles.navItem}>About</a>*/}
-        <Button
+        {/* <Button
           type="button"
           theme="secondary"
           variant={styles.button}
@@ -91,7 +89,7 @@ export const Header: React.FC = () => {
           disabled={false}
         >
           Connect Wallet
-        </Button>
+        </Button> */}
         <IconButton className={styles.iconButton}>
           <AppsSharpIcon />
         </IconButton>
