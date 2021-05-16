@@ -195,11 +195,6 @@ const BuyDag: React.FC = () => {
 
   return (
     <Layout>
-      <div>
-        <span>isInstalled: {String(isWalletInstalled)}, </span>
-        <span>isConnected: {String(isConnected)}, </span>
-        <span>activeAccount: {String(activeAccount)}</span>
-      </div>
       <div className={styles.pageWrapper}>
         {renderForm()}
         {/* {step === 3 && (
