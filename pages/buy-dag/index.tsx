@@ -30,10 +30,14 @@ const BuyDag: React.FC = () => {
   const [isWalletInstalled, setWalletInstalled] = useState<boolean>(false);
   const [activeAccount, setActiveAccount] = useState<string>("");
 
+  const [receipt, setReceipt] = useState({});
+
   const markAsInstalledAndCheckConnected = () => {
     setWalletInstalled(true);
 
-    window["stargazer"].isConnected().then((result) => setConnected(result));
+    window["stargazer"]
+      .isConnected()
+      .then((result) => setConnected(result.connected));
 
     // window["stargazer"].on("accountChanged", (account: string) => {
     //   setActiveAccount(account);
@@ -101,6 +105,10 @@ const BuyDag: React.FC = () => {
   const handleSubmitRequest = () => {
     const statement = `I am buying ${dagValue} DAG for ${usdValue} USD`;
     handleDagSignMessage(statement).then(({ address, sig }) => {
+      if (!sig) {
+        setStep(2);
+        return;
+      }
       const body = {
         auth: { token: sig },
         order: {
@@ -131,6 +139,7 @@ const BuyDag: React.FC = () => {
         .then(async (res) => {
           const result = await res.json();
           console.log(result);
+          setReceipt(result);
           setTransactionLoading(false);
         })
         .catch((err) => console.log(err));
@@ -171,17 +180,21 @@ const BuyDag: React.FC = () => {
           />
         );
       case 3:
-        <TransactionReceipt loading={transactionLoading} />;
+        return (
+          <TransactionReceipt
+            loading={transactionLoading}
+            receipt={receipt}
+            onDone={() => {
+              setStep(1);
+              setReceipt({});
+            }}
+          />
+        );
     }
   };
 
   return (
     <Layout>
-      <div>
-        <span>isInstalled: {String(isWalletInstalled)}, </span>
-        <span>isConnected: {String(isConnected)}, </span>
-        <span>activeAccount: {String(activeAccount)}</span>
-      </div>
       <div className={styles.pageWrapper}>
         {renderForm()}
         {/* {step === 3 && (
