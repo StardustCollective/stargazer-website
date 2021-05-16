@@ -13,12 +13,12 @@ export const Sidebar: React.FC = () => {
   return (
     <div className={styles.sidebar}>
       <div className={styles.body}>
-        <Link href="/connect-wallet">
-          <div className={styles.item}>
-            <AccountBalanceWalletIcon />
-            <span className={styles.label}>Connect Wallet</span>
-          </div>
-        </Link>
+        {/*<Link href="/connect-wallet">*/}
+        {/*  <div className={styles.item}>*/}
+        {/*    <AccountBalanceWalletIcon />*/}
+        {/*    <span className={styles.label}>Connect Wallet</span>*/}
+        {/*  </div>*/}
+        {/*</Link>*/}
         <Link href="/buy-dag">
           <div className={styles.item}>
             <CreditCardIcon />
@@ -26,19 +26,19 @@ export const Sidebar: React.FC = () => {
           </div>
         </Link>
         <Link href="/portfolio">
-          <div className={styles.item}>
+          <div className={styles.itemDisabled}>
             <PersonIcon />
             <span className={styles.label}>Portfolio</span>
           </div>
         </Link>
         <Link href="/swap">
-          <div className={styles.item}>
+          <div className={styles.itemDisabled}>
             <SwapCallsIcon />
             <span className={styles.label}>Swap</span>
           </div>
         </Link>
         <Link href="/terminal">
-          <div className={styles.item}>
+          <div className={styles.itemDisabled}>
             <DashboardIcon />
             <span className={styles.label}>Terminal</span>
           </div>

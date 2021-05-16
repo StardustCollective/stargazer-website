@@ -152,13 +152,21 @@
         display: flex;
         justify-content: space-between;
         width: 100%;
+        align-items: center;
         .trItem {
           padding: 0;
+          border-bottom: none;
+
+          &:last-child {
+            text-align: left;
+          }
         }
+        padding-bottom: 16px;
+        border-bottom: 1px solid $gray-100;
       }
       .trItem {
         width: 100%;
-        border-bottom: 1px solid #f5f5f5;
+        border-bottom: 1px solid $gray-100;
         padding: 16px 0;
         box-sizing: border-box;
         &.noBorder {

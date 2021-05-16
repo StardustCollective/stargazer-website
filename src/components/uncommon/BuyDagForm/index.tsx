@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import classnames from "classnames";
 import clm from "country-locale-map";
@@ -29,6 +29,9 @@ interface FIWProps {
   children: any;
   label: string;
 }
+
+const DAG_PRICE_URL = "https://www.stargazer.network/api/price?symbol=DAG-USDT";
+
 export const FormItemWrapper: React.FC<FIWProps> = ({
   children,
   label,
@@ -77,9 +80,15 @@ export const Card: React.FC = () => {
 interface BDFProp {
   nextStep: (usdValue, dagValue) => void;
 }
+
+type LastPrice = {
+  amount: number;
+  time: number;
+};
+
 export const BuyDagForm: React.FC<BDFProp> = ({ nextStep }: BDFProp) => {
-  const conversionRate = 0.06; /// 1 DAG is 0.06 USD
   const dispatch = useDispatch();
+  const [lastPrice, setLastPrice] = useState<LastPrice>({ amount: 0, time: 0 });
   const { usdValue, dagValue } = useSelector((root: RootState) => root.buyDag);
   const setUsdValue = (value) => {
     dispatch(
@@ -95,19 +104,31 @@ export const BuyDagForm: React.FC<BDFProp> = ({ nextStep }: BDFProp) => {
       }),
     );
   };
-  const handleUsdValueChange = (e) => {
+  const getDagPrice = async () => {
+    // console.log(lastPrice.time, Date.now());
+    if (lastPrice.time + 15000 > Date.now()) {
+      return lastPrice.amount;
+    }
+    const res = await fetch(DAG_PRICE_URL);
+    const b = await res.json();
+    const amount = +b.price;
+    setLastPrice({ amount, time: Date.now() });
+    return amount;
+  };
+  const handleUsdValueChange = async (e) => {
     const inputValue = e.target.value;
     if (inputValue === "" || inputValue === "0") {
       setDagValue(0);
       setUsdValue(0);
     } else if (isFinite(inputValue)) {
-      const nUsd = parseFloat(inputValue);
+      const nUsd = Math.min(2000, parseFloat(inputValue));
       setUsdValue(inputValue);
-      setDagValue((nUsd / conversionRate).toFixed(6));
+      const conversionRate = await getDagPrice();
+      setDagValue((nUsd / conversionRate).toFixed(8));
     }
   };
 
-  const handleDagValueChange = (e) => {
+  const handleDagValueChange = async (e) => {
     const inputValue = e.target.value;
     if (inputValue === "" || inputValue === "0") {
       setDagValue(0);
@@ -115,7 +136,8 @@ export const BuyDagForm: React.FC<BDFProp> = ({ nextStep }: BDFProp) => {
     } else if (isFinite(inputValue)) {
       const nDag = parseFloat(inputValue);
       setDagValue(inputValue);
-      setUsdValue((nDag * conversionRate).toFixed(6));
+      const conversionRate = await getDagPrice();
+      setUsdValue((nDag * conversionRate).toFixed(2));
     }
   };
 
@@ -456,10 +478,22 @@ export const BuyDagFormStep2: React.FC<BDF2Prop> = ({
 
 interface TransactionReceiptProp {
   loading: boolean;
+  receipt: any;
+  onDone: () => void;
 }
 export const TransactionReceipt: React.FC<TransactionReceiptProp> = ({
   loading,
+  receipt,
+  onDone,
 }: TransactionReceiptProp) => {
+  const [balance, setBalance] = useState(0);
+
+  useEffect(() => {
+    window["stargazer"]
+      .request({ method: "getBalance" })
+      .then((value) => setBalance(value));
+  }, [loading]);
+
   return (
     <div className={styles.formWrapper}>
       <div className={styles.header}>
@@ -470,41 +504,49 @@ export const TransactionReceipt: React.FC<TransactionReceiptProp> = ({
           [styles.loading]: loading,
         })}
       >
-        {loading && (
+        {loading ? (
           <>
             <HourglassEmptyIcon />
             <span>Waiting for Tokens</span>
           </>
-        )}
-        {!loading && (
+        ) : (
           <>
             <div className={styles.trWrapper}>
               <div className={styles.trItem}>
                 <p className={styles.title}>$DAG amount</p>
-                <span className={styles.description}>10000 $DAG </span>
+                <span className={styles.description}>
+                  {Number(receipt.dagQtyPurchased).toFixed(2)} $DAG{" "}
+                </span>
               </div>
               <SwapHorizIcon />
               <div className={classnames(styles.trItem, styles.trMargin)}>
                 <p className={styles.title}>Paid</p>
-                <span className={styles.description}>$600 USD </span>
+                <span className={styles.description}>
+                  ${receipt.amountChargedUSD / 100} USD{" "}
+                </span>
               </div>
             </div>
 
             <div className={styles.trItem}>
               <p className={styles.title}>Receipt ID</p>
-              <span className={styles.description}>
-                b160c49f009c1ec99abe944a957c260c03f7200b4959eee229f2de7f1db3fcf1
-              </span>
+              <span className={styles.description}>{receipt.txHash}</span>
             </div>
             <div className={styles.trItem}>
               <p className={styles.title}>New $DAG Balance</p>
-              <span className={styles.description}>510000 $DAG</span>
+              <span className={styles.description}>${balance} $DAG</span>
             </div>
             <div className={classnames(styles.trItem, styles.noBorder)}>
               <p className={styles.title}>Timestamp</p>
-              <span className={styles.description}>Apr 17 2021 3:50:01 pm</span>
+              <span className={styles.description}>
+                {new Date(receipt["receipt"].updatedAt * 1000).toLocaleString()}
+              </span>
             </div>
-            <Button type="button" theme="primary" variant={styles.button}>
+            <Button
+              type="button"
+              theme="primary"
+              variant={styles.button}
+              onClick={onDone}
+            >
               DONE
             </Button>
           </>
