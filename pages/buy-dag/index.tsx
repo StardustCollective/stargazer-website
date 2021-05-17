@@ -171,6 +171,9 @@ const BuyDag: React.FC = () => {
       case 2:
         return (
           <BuyDagFormStep1
+            prevStep={() => {
+              setStep(1);
+            }}
             nextStep={({ cardName, cardNumber, expiryDate, cvv }) => {
               console.log({ cardName, cardNumber, expiryDate, cvv });
               setStep(3);
