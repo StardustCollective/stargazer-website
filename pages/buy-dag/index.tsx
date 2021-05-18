@@ -138,6 +138,9 @@ const BuyDag: React.FC = () => {
       })
         .then(async (res) => {
           const result = await res.json();
+          // if (!res.ok) {
+          //   throw result;
+          // }
           console.log(result);
           setReceipt(result);
           setTransactionLoading(false);

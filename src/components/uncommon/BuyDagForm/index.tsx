@@ -542,13 +542,13 @@ export const TransactionReceipt: React.FC<TransactionReceiptProp> = ({
   receipt,
   onDone,
 }: TransactionReceiptProp) => {
-  const [balance, setBalance] = useState(0);
-
-  useEffect(() => {
-    window["stargazer"]
-      .request({ method: "getBalance" })
-      .then((value) => setBalance(value));
-  }, [loading]);
+  // const [balance, setBalance] = useState(0);
+  //
+  // useEffect(() => {
+  //   window["stargazer"]
+  //     .request({ method: "getBalance" })
+  //     .then((value) => setBalance(value));
+  // }, [loading]);
 
   return (
     <div className={styles.formWrapper}>
@@ -593,10 +593,10 @@ export const TransactionReceipt: React.FC<TransactionReceiptProp> = ({
                   <p className={styles.title}>Receipt ID</p>
                   <span className={styles.description}>{receipt.txHash}</span>
                 </div>
-                <div className={styles.trItem}>
-                  <p className={styles.title}>New $DAG Balance</p>
-                  <span className={styles.description}>${balance} $DAG</span>
-                </div>
+                {/*<div className={styles.trItem}>*/}
+                {/*  <p className={styles.title}>New $DAG Balance</p>*/}
+                {/*  <span className={styles.description}>${balance} $DAG</span>*/}
+                {/*</div>*/}
                 <div className={classnames(styles.trItem, styles.noBorder)}>
                   <p className={styles.title}>Timestamp</p>
                   <span className={styles.description}>

@@ -41,7 +41,14 @@ const ConnectStargazer: FC<IConnectStargazer> = ({
         </label>
         {!installed && (
           <span>
-            No wallet detected. Install <a href="#">here</a>.
+            No wallet detected. Install{" "}
+            <a
+              target="_blank"
+              href="https://chrome.google.com/webstore/detail/stargazer-wallet/pgiaagfkgcbnmiiolekcfmljdagdhlcm"
+            >
+              here
+            </a>
+            .
           </span>
         )}
         <Button
