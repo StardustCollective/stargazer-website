@@ -607,9 +607,11 @@ export const TransactionReceipt: React.FC<TransactionReceiptProp> = ({
                 </div>
               </>
             ) : (
-              <div
-                className={styles.errorItem}
-              >{`Error Code: ${receipt.name}`}</div>
+              <div className={styles.errorItem}>
+                This service is currently unavailable.
+                <br />
+                Please try again later.
+              </div>
             )}
             <Button
               type="button"
@@ -617,7 +619,7 @@ export const TransactionReceipt: React.FC<TransactionReceiptProp> = ({
               variant={styles.button}
               onClick={onDone}
             >
-              {receipt.txHash !== undefined ? "DONE" : "RETRY"}
+              {receipt.txHash !== undefined ? "DONE" : "CLOSE"}
             </Button>
           </>
         )}
