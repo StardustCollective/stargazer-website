@@ -7,6 +7,8 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import CreditCardIcon from "@material-ui/icons/CreditCard";
 import HourglassEmptyIcon from "@material-ui/icons/HourglassEmpty";
 import SwapHorizIcon from "@material-ui/icons/SwapHoriz";
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
+import IconButton from "@material-ui/core/IconButton";
 
 import { setState } from "@redux/actions";
 import { RootState } from "@redux/reducers";
@@ -90,6 +92,20 @@ export const BuyDagForm: React.FC<BDFProp> = ({ nextStep }: BDFProp) => {
   const dispatch = useDispatch();
   const [lastPrice, setLastPrice] = useState<LastPrice>({ amount: 0, time: 0 });
   const { usdValue, dagValue } = useSelector((root: RootState) => root.buyDag);
+
+  useEffect(() => {
+    dispatch(
+      setState({
+        usdValue: "",
+      }),
+    );
+    dispatch(
+      setState({
+        dagValue: "",
+      }),
+    );
+  }, []);
+
   const setUsdValue = (value) => {
     dispatch(
       setState({
@@ -178,9 +194,13 @@ export const BuyDagForm: React.FC<BDFProp> = ({ nextStep }: BDFProp) => {
 };
 
 interface BDF1Prop {
+  prevStep: () => void;
   nextStep: ({ cardName, cardNumber, expiryDate, cvv }) => void;
 }
-export const BuyDagFormStep1: React.FC<BDF1Prop> = ({ nextStep }: BDF1Prop) => {
+export const BuyDagFormStep1: React.FC<BDF1Prop> = ({
+  prevStep,
+  nextStep,
+}: BDF1Prop) => {
   const dispatch = useDispatch();
   const { cardName, cardNumber, expiryDate, cvv, email } = useSelector(
     (root: RootState) => root.buyDag,
@@ -190,6 +210,35 @@ export const BuyDagFormStep1: React.FC<BDF1Prop> = ({ nextStep }: BDF1Prop) => {
   const [errExpDate, setErrExpDate] = useState("");
   const [errCvv, setErrCvv] = useState("");
   const [errEmail, setErrEmail] = useState("");
+
+  useEffect(() => {
+    dispatch(
+      setState({
+        cardName: "",
+      }),
+    );
+    dispatch(
+      setState({
+        cardNumber: "",
+      }),
+    );
+    dispatch(
+      setState({
+        expiryDate: "",
+      }),
+    );
+    dispatch(
+      setState({
+        cvv: "",
+      }),
+    );
+    dispatch(
+      setState({
+        email: "",
+      }),
+    );
+  }, []);
+
   const validDate = (dValue) => {
     let result = false;
     const pattern = /^\d{2}$/;
@@ -231,6 +280,13 @@ export const BuyDagFormStep1: React.FC<BDF1Prop> = ({ nextStep }: BDF1Prop) => {
       onSubmit={() => nextStep({ cardName, cardNumber, expiryDate, cvv })}
     >
       <div className={styles.header}>
+        <IconButton
+          size="small"
+          className={styles.backButton}
+          onClick={prevStep}
+        >
+          <ArrowBackIcon fontSize="small" />
+        </IconButton>
         <div className={styles.title}>Buy with Card</div>
       </div>
       <div className={styles.body}>
