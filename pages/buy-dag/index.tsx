@@ -91,20 +91,24 @@ const BuyDag: React.FC = () => {
       .request({ method: "getAddress" })
       .then((currentAccount) => {
         return window["stargazer"]
-          .request({
-            method: "signMessage",
-            params: [message, currentAccount],
-          })
-          .then((sig) => {
-            console.log("SIG", sig);
-            return { address: currentAccount, sig };
+          .request({ method: "getNetwork" })
+          .then((network) => {
+            return window["stargazer"]
+              .request({
+                method: "signMessage",
+                params: [message, currentAccount],
+              })
+              .then((sig) => {
+                console.log("SIG", sig);
+                return { address: currentAccount, sig, network };
+              });
           });
       });
   };
 
   const handleSubmitRequest = () => {
     const statement = `I am buying ${dagValue} DAG for ${usdValue} USD`;
-    handleDagSignMessage(statement).then(({ address, sig }) => {
+    handleDagSignMessage(statement).then(({ address, sig, network }) => {
       if (!sig) {
         setStep(2);
         return;
@@ -113,6 +117,7 @@ const BuyDag: React.FC = () => {
         auth: { token: sig },
         order: {
           asset: "DAG",
+          network,
           quantity: +dagValue,
           amountUSD: Math.floor(usdValue * 100),
           tokenAddress: address,
