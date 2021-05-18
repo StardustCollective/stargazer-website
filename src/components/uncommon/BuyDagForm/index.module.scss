@@ -192,6 +192,8 @@
         border-bottom: 1px solid $gray-100;
         padding: 16px 0;
         box-sizing: border-box;
+        position: relative;
+
         &.noBorder {
           border: none;
         }
@@ -223,6 +225,10 @@
         }
         .txlink {
           background: $gray-dark;
+          right: 0;
+          top: 36px;
+          position: absolute;
+
           svg {
             color: white !important;
           }

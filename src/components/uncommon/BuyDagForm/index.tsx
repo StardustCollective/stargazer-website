@@ -554,11 +554,13 @@ export const TransactionReceipt: React.FC<TransactionReceiptProp> = ({
   //     .then((value) => setBalance(value));
   // }, [loading]);
 
-  const DAG_EXPLORER_SEARCH =
-    "http://lb.exchanges.constellationnetwork.io:9000/transaction/";
+  const DAG_EXPLORER_SEARCH = {
+    main: "https://www.dagexplorer.io/search?term=",
+    ceres: "http://lb.exchanges.constellationnetwork.io:9000/transaction/",
+  };
 
-  const handleOpenLink = (txHash: string) => {
-    window.open(`${DAG_EXPLORER_SEARCH}${txHash}`, "_blank");
+  const handleOpenLink = (txHash: string, network: string) => {
+    window.open(`${DAG_EXPLORER_SEARCH[network]}${txHash}`, "_blank");
   };
 
   return (
@@ -613,7 +615,9 @@ export const TransactionReceipt: React.FC<TransactionReceiptProp> = ({
                   <IconButton
                     size="small"
                     className={styles.txlink}
-                    onClick={() => handleOpenLink(receipt.txHash)}
+                    onClick={() =>
+                      handleOpenLink(receipt.txHash, receipt.network)
+                    }
                   >
                     <CallMadeRoundedIcon fontSize="small" />
                   </IconButton>
