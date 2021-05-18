@@ -180,6 +180,9 @@ export const BuyDagForm: React.FC<BDFProp> = ({ nextStep }: BDFProp) => {
           value={dagValue !== 0 ? dagValue.toString() : ""}
         />
         <Card />
+        <div className={styles.labelRow}>
+          <span>Processing Fee</span>5%
+        </div>
         <Button
           type="button"
           theme="primary"
