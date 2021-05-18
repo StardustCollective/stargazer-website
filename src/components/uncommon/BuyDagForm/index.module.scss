@@ -116,7 +116,7 @@
         }
       }
     }
-    button {
+    .button {
       width: 100%;
       position: absolute;
       bottom: 24px;
@@ -201,6 +201,16 @@
           line-height: 15px;
           overflow-wrap: break-word;
           color: $gray-dark;
+          &.transaction {
+            display: inline-block;
+            width: calc(100% - 36px);
+          }
+        }
+        .txlink {
+          background: $gray-dark;
+          svg {
+            color: white !important;
+          }
         }
       }
       .errorItem {

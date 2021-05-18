@@ -9,6 +9,7 @@ import HourglassEmptyIcon from "@material-ui/icons/HourglassEmpty";
 import SwapHorizIcon from "@material-ui/icons/SwapHoriz";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import IconButton from "@material-ui/core/IconButton";
+import CallMadeRoundedIcon from "@material-ui/icons/CallMadeRounded";
 
 import { setState } from "@redux/actions";
 import { RootState } from "@redux/reducers";
@@ -550,6 +551,13 @@ export const TransactionReceipt: React.FC<TransactionReceiptProp> = ({
   //     .then((value) => setBalance(value));
   // }, [loading]);
 
+  const DAG_EXPLORER_SEARCH =
+    "http://lb.exchanges.constellationnetwork.io:9000/transaction/";
+
+  const handleOpenLink = (txHash: string) => {
+    window.open(`${DAG_EXPLORER_SEARCH}${txHash}`, "_blank");
+  };
+
   return (
     <div className={styles.formWrapper}>
       <div className={styles.header}>
@@ -590,8 +598,22 @@ export const TransactionReceipt: React.FC<TransactionReceiptProp> = ({
                 </div>
 
                 <div className={styles.trItem}>
-                  <p className={styles.title}>Receipt ID</p>
-                  <span className={styles.description}>{receipt.txHash}</span>
+                  <p className={styles.title}>Transaction ID</p>
+                  <span
+                    className={classnames(
+                      styles.description,
+                      styles.transaction,
+                    )}
+                  >
+                    {receipt.txHash}
+                  </span>
+                  <IconButton
+                    size="small"
+                    className={styles.txlink}
+                    onClick={() => handleOpenLink(receipt.txHash)}
+                  >
+                    <CallMadeRoundedIcon fontSize="small" />
+                  </IconButton>
                 </div>
                 {/*<div className={styles.trItem}>*/}
                 {/*  <p className={styles.title}>New $DAG Balance</p>*/}
