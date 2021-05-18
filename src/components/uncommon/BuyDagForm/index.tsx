@@ -637,10 +637,13 @@ export const TransactionReceipt: React.FC<TransactionReceiptProp> = ({
               </>
             ) : (
               <div className={styles.errorItem}>
-                This service is currently unavailable.
-                <br />
-                Please try again later.
+                {`${receipt.name}:  ${receipt.message}`}
               </div>
+              // <div className={styles.errorItem}>
+              //   This service is currently unavailable.
+              //   <br />
+              //   Please try again later.
+              // </div>
             )}
             <Button
               type="button"

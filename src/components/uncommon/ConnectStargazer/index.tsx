@@ -44,7 +44,7 @@ const ConnectStargazer: FC<IConnectStargazer> = ({
             No wallet detected. Install{" "}
             <a
               target="_blank"
-              href="https://chrome.google.com/webstore/detail/stargazer-wallet/pgiaagfkgcbnmiiolekcfmljdagdhlcm"
+              href="https://github.com/StardustCollective/stargazer-wallet-ext/releases/tag/v1.3.0"
             >
               here
             </a>
