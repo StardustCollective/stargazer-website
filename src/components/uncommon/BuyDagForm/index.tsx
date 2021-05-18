@@ -497,7 +497,11 @@ export const TransactionReceipt: React.FC<TransactionReceiptProp> = ({
   return (
     <div className={styles.formWrapper}>
       <div className={styles.header}>
-        <div className={styles.title}>Transaction receipt</div>
+        <div className={styles.title}>
+          {!loading && receipt.txHash === undefined
+            ? "Transaction Error"
+            : "Transaction receipt"}
+        </div>
       </div>
       <div
         className={classnames(styles.body, styles.transactionReceipt, {
@@ -511,43 +515,53 @@ export const TransactionReceipt: React.FC<TransactionReceiptProp> = ({
           </>
         ) : (
           <>
-            <div className={styles.trWrapper}>
-              <div className={styles.trItem}>
-                <p className={styles.title}>$DAG amount</p>
-                <span className={styles.description}>
-                  {Number(receipt.dagQtyPurchased).toFixed(2)} $DAG{" "}
-                </span>
-              </div>
-              <SwapHorizIcon />
-              <div className={classnames(styles.trItem, styles.trMargin)}>
-                <p className={styles.title}>Paid</p>
-                <span className={styles.description}>
-                  ${receipt.amountChargedUSD / 100} USD{" "}
-                </span>
-              </div>
-            </div>
+            {receipt.txHash !== undefined ? (
+              <>
+                <div className={styles.trWrapper}>
+                  <div className={styles.trItem}>
+                    <p className={styles.title}>$DAG amount</p>
+                    <span className={styles.description}>
+                      {Number(receipt.dagQtyPurchased).toFixed(2)} $DAG{" "}
+                    </span>
+                  </div>
+                  <SwapHorizIcon />
+                  <div className={classnames(styles.trItem, styles.trMargin)}>
+                    <p className={styles.title}>Paid</p>
+                    <span className={styles.description}>
+                      ${receipt.amountChargedUSD / 100} USD{" "}
+                    </span>
+                  </div>
+                </div>
 
-            <div className={styles.trItem}>
-              <p className={styles.title}>Receipt ID</p>
-              <span className={styles.description}>{receipt.txHash}</span>
-            </div>
-            <div className={styles.trItem}>
-              <p className={styles.title}>New $DAG Balance</p>
-              <span className={styles.description}>${balance} $DAG</span>
-            </div>
-            <div className={classnames(styles.trItem, styles.noBorder)}>
-              <p className={styles.title}>Timestamp</p>
-              <span className={styles.description}>
-                {new Date(receipt["receipt"].updatedAt * 1000).toLocaleString()}
-              </span>
-            </div>
+                <div className={styles.trItem}>
+                  <p className={styles.title}>Receipt ID</p>
+                  <span className={styles.description}>{receipt.txHash}</span>
+                </div>
+                <div className={styles.trItem}>
+                  <p className={styles.title}>New $DAG Balance</p>
+                  <span className={styles.description}>${balance} $DAG</span>
+                </div>
+                <div className={classnames(styles.trItem, styles.noBorder)}>
+                  <p className={styles.title}>Timestamp</p>
+                  <span className={styles.description}>
+                    {new Date(
+                      receipt["receipt"].updatedAt * 1000,
+                    ).toLocaleString()}
+                  </span>
+                </div>
+              </>
+            ) : (
+              <div
+                className={styles.errorItem}
+              >{`Error Code: ${receipt.name}`}</div>
+            )}
             <Button
               type="button"
               theme="primary"
               variant={styles.button}
               onClick={onDone}
             >
-              DONE
+              {receipt.txHash !== undefined ? "DONE" : "RETRY"}
             </Button>
           </>
         )}

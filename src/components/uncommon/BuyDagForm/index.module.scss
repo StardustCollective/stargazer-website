@@ -195,6 +195,21 @@
           color: $gray-dark;
         }
       }
+      .errorItem {
+        background: #e0d3ee;
+        box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
+        border-radius: 6px;
+        padding: 12px;
+        font-family: Roboto;
+        font-style: normal;
+        font-weight: normal;
+        font-size: 12px;
+        line-height: 14px;
+        display: flex;
+        align-items: center;
+
+        color: $primary-600;
+      }
     }
   }
 }
