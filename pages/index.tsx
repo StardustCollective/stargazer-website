@@ -1,9 +1,8 @@
 import React from "react";
 
-import { Layout } from "@components/common";
-
+import BuyDag from "./buy-dag";
 const Home: React.FC = () => {
-  return <Layout>This is content area</Layout>;
+  return <BuyDag />;
 };
 
 export default Home;
