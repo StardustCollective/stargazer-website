@@ -107,7 +107,7 @@ const BuyDag: React.FC = () => {
   };
 
   const handleSubmitRequest = () => {
-    const statement = `I am buying ${dagValue} DAG for ${usdValue} USD`;
+    const statement = `I am donating ${usdValue} USD and receiving ${dagValue} DAG`;
     handleDagSignMessage(statement).then(({ address, sig, network }) => {
       if (!sig) {
         setStep(2);

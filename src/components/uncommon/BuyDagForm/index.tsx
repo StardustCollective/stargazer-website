@@ -165,7 +165,7 @@ export const BuyDagForm: React.FC<BDFProp> = ({ nextStep }: BDFProp) => {
       </div>
       <div className={styles.body}>
         <FormItem
-          label="Spend"
+          label="Donate"
           expandable={false}
           logoUrl="/icons/usd.svg"
           currency="USD"
@@ -173,7 +173,7 @@ export const BuyDagForm: React.FC<BDFProp> = ({ nextStep }: BDFProp) => {
           value={usdValue !== 0 ? usdValue.toString() : ""}
         />
         <FormItem
-          label="Buy"
+          label="Receive"
           logoUrl="/icons/dag.svg"
           currency="DAG"
           onValueChange={handleDagValueChange}
@@ -184,10 +184,8 @@ export const BuyDagForm: React.FC<BDFProp> = ({ nextStep }: BDFProp) => {
           <span>Processing Fee</span>5%
         </div>
         <div className={styles.labelRowSm}>
-
-            Proceeds go to the Stardust Foundation. 30% of credit card
-            processing fees go to nonprofits via Givebox.
-
+          All proceeds are going to the Stardust Foundation. <br></br>30% of the
+          processing fees are going to nonprofit organizations from Givebox.
         </div>
         <Button
           type="button"
@@ -396,7 +394,7 @@ export const BuyDagFormStep1: React.FC<BDF1Prop> = ({
             value={cvv}
             onChange={(e) => {
               if (
-                (e.nativeEvent.data > "0" && e.nativeEvent.data <= "9") ||
+                (e.nativeEvent.data >= "0" && e.nativeEvent.data <= "9") ||
                 e.nativeEvent.data === null
               ) {
                 if (!validateCVV(e.target.value)) {
