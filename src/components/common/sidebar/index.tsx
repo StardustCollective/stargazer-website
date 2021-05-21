@@ -22,7 +22,7 @@ export const Sidebar: React.FC = () => {
         <Link href="/">
           <div className={styles.item}>
             <CreditCardIcon />
-            <span className={styles.label}>Buy DAG</span>
+            <span className={styles.label}>Get DAG</span>
           </div>
         </Link>
         <Link href="/portfolio">

@@ -161,12 +161,12 @@ export const BuyDagForm: React.FC<BDFProp> = ({ nextStep }: BDFProp) => {
   return (
     <div className={styles.formWrapper}>
       <div className={styles.header}>
-        <div className={styles.title}>Buy Dag</div>
+        <div className={styles.title}>Get Dag</div>
       </div>
       <div className={styles.body}>
         <FormItem
           label="Spend"
-          expandable={true}
+          expandable={false}
           logoUrl="/icons/usd.svg"
           currency="USD"
           onValueChange={handleUsdValueChange}
@@ -183,6 +183,12 @@ export const BuyDagForm: React.FC<BDFProp> = ({ nextStep }: BDFProp) => {
         <div className={styles.labelRow}>
           <span>Processing Fee</span>5%
         </div>
+        <div className={styles.labelRowSm}>
+
+            Proceeds go to the Stardust Foundation. 30% of credit card
+            processing fees go to nonprofits via Givebox.
+
+        </div>
         <Button
           type="button"
           theme="primary"
@@ -190,7 +196,7 @@ export const BuyDagForm: React.FC<BDFProp> = ({ nextStep }: BDFProp) => {
           onClick={() => nextStep(usdValue, dagValue)}
           disabled={usdValue === 0 || dagValue === 0}
         >
-          Buy DAG
+          Get DAG
         </Button>
       </div>
     </div>
@@ -291,7 +297,7 @@ export const BuyDagFormStep1: React.FC<BDF1Prop> = ({
         >
           <ArrowBackIcon fontSize="small" />
         </IconButton>
-        <div className={styles.title}>Buy with Card</div>
+        <div className={styles.title}>Donate with Card</div>
       </div>
       <div className={styles.body}>
         {/* <StepMarker currentStep={1} /> */}
@@ -462,7 +468,7 @@ export const BuyDagFormStep2: React.FC<BDF2Prop> = ({
   return (
     <div className={styles.formWrapper}>
       <div className={styles.header}>
-        <div className={styles.title}>Buy with Card</div>
+        <div className={styles.title}>Donate with Card</div>
       </div>
       <div className={styles.body}>
         <StepMarker currentStep={2} />

@@ -80,7 +80,7 @@ const BuyDag: React.FC = () => {
           })
           .then((sig) => {
             sig = sig.startsWith("0x") ? sig.slice(2) : sig;
-            console.log("SIG", sig);
+            //console.log("SIG", sig);
             return { address: currentAccount, sig };
           });
       });
@@ -99,7 +99,7 @@ const BuyDag: React.FC = () => {
                 params: [message, currentAccount],
               })
               .then((sig) => {
-                console.log("SIG", sig);
+                //console.log("SIG", sig);
                 return { address: currentAccount, sig, network };
               });
           });
@@ -146,7 +146,7 @@ const BuyDag: React.FC = () => {
           // if (!res.ok) {
           //   throw result;
           // }
-          console.log(result);
+          //console.log(result);
           setReceipt(result);
           setTransactionLoading(false);
         })
@@ -170,8 +170,7 @@ const BuyDag: React.FC = () => {
       case 1:
         return (
           <BuyDagForm
-            nextStep={(usdValue, dagValue) => {
-              console.log(usdValue, dagValue);
+            nextStep={() => {
               setStep(2);
             }}
           />
@@ -182,8 +181,7 @@ const BuyDag: React.FC = () => {
             prevStep={() => {
               setStep(1);
             }}
-            nextStep={({ cardName, cardNumber, expiryDate, cvv }) => {
-              console.log({ cardName, cardNumber, expiryDate, cvv });
+            nextStep={() => {
               setStep(3);
               handleSubmitRequest();
               setTransactionLoading(true);
