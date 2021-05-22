@@ -138,8 +138,8 @@ export const BuyDagForm: React.FC<BDFProp> = ({ nextStep }: BDFProp) => {
       setDagValue(0);
       setUsdValue(0);
     } else if (isFinite(inputValue)) {
-      const nUsd = Math.min(2000, parseFloat(inputValue));
-      setUsdValue(inputValue);
+      const nUsd = Math.min(1000, parseFloat(inputValue));
+      setUsdValue(nUsd);
       const conversionRate = await getDagPrice();
       setDagValue((nUsd / conversionRate).toFixed(8));
     }
@@ -151,10 +151,16 @@ export const BuyDagForm: React.FC<BDFProp> = ({ nextStep }: BDFProp) => {
       setDagValue(0);
       setUsdValue(0);
     } else if (isFinite(inputValue)) {
-      const nDag = parseFloat(inputValue);
-      setDagValue(inputValue);
       const conversionRate = await getDagPrice();
-      setUsdValue((nDag * conversionRate).toFixed(2));
+      let nDag: any = parseFloat(inputValue);
+      let usdValue = nDag * conversionRate;
+      if (usdValue > 1000) {
+        usdValue = 1000;
+        nDag = 1000 / conversionRate;
+        nDag = nDag.toFixed(Math.min(8, nDag.toString().length));
+      }
+      setDagValue(nDag);
+      setUsdValue(usdValue.toFixed(2));
     }
   };
 
