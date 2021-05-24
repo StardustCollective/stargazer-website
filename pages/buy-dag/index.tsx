@@ -28,7 +28,7 @@ const BuyDag: React.FC = () => {
 
   const [isConnected, setConnected] = useState<boolean>(false);
   const [isWalletInstalled, setWalletInstalled] = useState<boolean>(false);
-  const [activeAccount, setActiveAccount] = useState<string>("");
+  // const [activeAccount, setActiveAccount] = useState<string>("");
 
   const [receipt, setReceipt] = useState({});
 
@@ -55,36 +55,6 @@ const BuyDag: React.FC = () => {
       }, 3000);
     }
   }, []);
-
-  const handleStargazerEnable = () => {
-    window["ethereum"]
-      .enable()
-      .then((account) => {
-        setActiveAccount(account);
-        console.log("Successfully connected to Stargazer.", account);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  };
-
-  const handleEthSignMessage = (message) => {
-    return window["ethereum"]
-      .request({ method: "eth_requestAccounts" })
-      .then((accounts) => accounts[0])
-      .then((currentAccount) => {
-        return window["ethereum"]
-          .request({
-            method: "personal_sign",
-            params: [message, currentAccount, ""],
-          })
-          .then((sig) => {
-            sig = sig.startsWith("0x") ? sig.slice(2) : sig;
-            //console.log("SIG", sig);
-            return { address: currentAccount, sig };
-          });
-      });
-  };
 
   const handleDagSignMessage = (message) => {
     return window["stargazer"]
