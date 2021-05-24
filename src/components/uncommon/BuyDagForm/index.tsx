@@ -24,6 +24,7 @@ interface IProps {
   expandable?: boolean;
   logoUrl: string;
   currency: string;
+  disabled?: boolean;
   onValueChange: (e) => void;
   value?: string;
 }
@@ -50,6 +51,7 @@ export const FormItemWrapper: React.FC<FIWProps> = ({
 export const FormItem: React.FC<IProps> = ({
   label,
   expandable,
+  disabled,
   logoUrl,
   currency,
   onValueChange,
@@ -58,7 +60,12 @@ export const FormItem: React.FC<IProps> = ({
   return (
     <div className={styles.item}>
       <span className={styles.label}>{label}</span>
-      <input placeholder="0.0" onChange={onValueChange} value={value} />
+      <input
+        placeholder="0.0"
+        onChange={onValueChange}
+        value={value}
+        disabled={disabled}
+      />
       <span className={styles.splitter}></span>
       <div className={styles.currencySelector}>
         <img className={styles.logo} src={logoUrl} />
@@ -93,6 +100,13 @@ export const BuyDagForm: React.FC<BDFProp> = ({ nextStep }: BDFProp) => {
   const dispatch = useDispatch();
   const [lastPrice, setLastPrice] = useState<LastPrice>({ amount: 0, time: 0 });
   const { usdValue, dagValue } = useSelector((root: RootState) => root.buyDag);
+  const [MAINTENANCE, setMaintenance] = useState<boolean>(false);
+
+  // React.useEffect(() => {
+  //   window["stargazer"].request({ method: "getNetwork" }).then((network) => {
+  //     setMaintenance(network !== "ceres");
+  //   });
+  // }, []);
 
   useEffect(() => {
     dispatch(
@@ -138,9 +152,10 @@ export const BuyDagForm: React.FC<BDFProp> = ({ nextStep }: BDFProp) => {
       setDagValue(0);
       setUsdValue(0);
     } else if (isFinite(inputValue)) {
-      const nUsd = Math.min(2000, parseFloat(inputValue));
-      setUsdValue(inputValue);
+      const nUsd = Math.min(1000, parseFloat(inputValue));
+      setUsdValue(nUsd);
       const conversionRate = await getDagPrice();
+      //setDagValue(((nUsd * 0.95) / conversionRate).toFixed(8));
       setDagValue((nUsd / conversionRate).toFixed(8));
     }
   };
@@ -151,31 +166,40 @@ export const BuyDagForm: React.FC<BDFProp> = ({ nextStep }: BDFProp) => {
       setDagValue(0);
       setUsdValue(0);
     } else if (isFinite(inputValue)) {
-      const nDag = parseFloat(inputValue);
-      setDagValue(inputValue);
       const conversionRate = await getDagPrice();
-      setUsdValue((nDag * conversionRate).toFixed(2));
+      let nDag: any = parseFloat(inputValue);
+      //let usdValue = (nDag * conversionRate) / 0.95;
+      let usdValue = nDag * conversionRate;
+      if (usdValue > 1000) {
+        usdValue = 1000;
+        //nDag = (usdValue * 0.95) / conversionRate;
+        nDag = nDag.toFixed(Math.min(8, nDag.toString().length));
+      }
+      setDagValue(nDag);
+      setUsdValue(usdValue.toFixed(2));
     }
   };
 
   return (
     <div className={styles.formWrapper}>
       <div className={styles.header}>
-        <div className={styles.title}>Buy Dag</div>
+        <div className={styles.title}>Get Dag</div>
       </div>
       <div className={styles.body}>
         <FormItem
-          label="Spend"
-          expandable={true}
+          label="Donate"
+          expandable={false}
           logoUrl="/icons/usd.svg"
           currency="USD"
+          disabled={MAINTENANCE}
           onValueChange={handleUsdValueChange}
           value={usdValue !== 0 ? usdValue.toString() : ""}
         />
         <FormItem
-          label="Buy"
+          label="Receive"
           logoUrl="/icons/dag.svg"
           currency="DAG"
+          disabled={MAINTENANCE}
           onValueChange={handleDagValueChange}
           value={dagValue !== 0 ? dagValue.toString() : ""}
         />
@@ -183,16 +207,25 @@ export const BuyDagForm: React.FC<BDFProp> = ({ nextStep }: BDFProp) => {
         <div className={styles.labelRow}>
           <span>Processing Fee</span>5%
         </div>
+        <div className={styles.labelRowSm}>
+          All proceeds are going to the Stardust Foundation. <br></br>30% of the
+          processing fees are going to nonprofit organizations from Givebox.
+        </div>
         <Button
           type="button"
           theme="primary"
           variant={styles.button}
           onClick={() => nextStep(usdValue, dagValue)}
-          disabled={usdValue === 0 || dagValue === 0}
+          disabled={usdValue === 0 || dagValue === 0 || MAINTENANCE}
         >
-          Buy DAG
+          Get DAG
         </Button>
       </div>
+      {MAINTENANCE && (
+        <div className={styles.serviceDown}>
+          *The service is down for maintenance and will be back soon.
+        </div>
+      )}
     </div>
   );
 };
@@ -291,7 +324,7 @@ export const BuyDagFormStep1: React.FC<BDF1Prop> = ({
         >
           <ArrowBackIcon fontSize="small" />
         </IconButton>
-        <div className={styles.title}>Buy with Card</div>
+        <div className={styles.title}>Donate with card</div>
       </div>
       <div className={styles.body}>
         {/* <StepMarker currentStep={1} /> */}
@@ -390,7 +423,7 @@ export const BuyDagFormStep1: React.FC<BDF1Prop> = ({
             value={cvv}
             onChange={(e) => {
               if (
-                (e.nativeEvent.data > "0" && e.nativeEvent.data <= "9") ||
+                (e.nativeEvent.data >= "0" && e.nativeEvent.data <= "9") ||
                 e.nativeEvent.data === null
               ) {
                 if (!validateCVV(e.target.value)) {
@@ -438,101 +471,6 @@ export const BuyDagFormStep1: React.FC<BDF1Prop> = ({
         </Button>
       </div>
     </form>
-  );
-};
-
-interface BDF2Prop {
-  prevStep: () => void;
-  nextStep: ({ country, address, city, postalCode }) => void;
-}
-export const BuyDagFormStep2: React.FC<BDF2Prop> = ({
-  prevStep,
-  nextStep,
-}: BDF2Prop) => {
-  const dispatch = useDispatch();
-  const { country, address, city, postalCode } = useSelector(
-    (root: RootState) => root.buyDag,
-  );
-  const checkDisabled = () => {
-    if (country && address && city && postalCode) {
-      return false;
-    }
-    return true;
-  };
-  return (
-    <div className={styles.formWrapper}>
-      <div className={styles.header}>
-        <div className={styles.title}>Buy with Card</div>
-      </div>
-      <div className={styles.body}>
-        <StepMarker currentStep={2} />
-        <FormInput
-          label="Country"
-          country={true}
-          onChange={(country) => {
-            dispatch(
-              setState({
-                country: clm.getCountryByAlpha2(country).name,
-              }),
-            );
-          }}
-        />
-        <FormInput
-          label="Address"
-          value={address}
-          onChange={(e) =>
-            dispatch(
-              setState({
-                address: e.target.value,
-              }),
-            )
-          }
-        />
-        <div className={styles.halfWrapper}>
-          <FormInput
-            label="City"
-            value={city}
-            onChange={(e) =>
-              dispatch(
-                setState({
-                  city: e.target.value,
-                }),
-              )
-            }
-          />
-          <FormInput
-            label="Postal Code"
-            value={postalCode}
-            onChange={(e) =>
-              dispatch(
-                setState({
-                  postalCode: e.target.value,
-                }),
-              )
-            }
-          />
-        </div>
-        <div className={classnames(styles.actionGroup, styles.halfWrapper)}>
-          <Button
-            type="button"
-            theme="darkgray"
-            variant={styles.button}
-            onClick={() => prevStep()}
-          >
-            Previous
-          </Button>
-          <Button
-            type="button"
-            theme="success"
-            variant={styles.button}
-            onClick={() => nextStep({ country, address, city, postalCode })}
-            disabled={checkDisabled()}
-          >
-            Pay Now
-          </Button>
-        </div>
-      </div>
-    </div>
   );
 };
 

@@ -28,7 +28,7 @@ const BuyDag: React.FC = () => {
 
   const [isConnected, setConnected] = useState<boolean>(false);
   const [isWalletInstalled, setWalletInstalled] = useState<boolean>(false);
-  const [activeAccount, setActiveAccount] = useState<string>("");
+  // const [activeAccount, setActiveAccount] = useState<string>("");
 
   const [receipt, setReceipt] = useState({});
 
@@ -56,36 +56,6 @@ const BuyDag: React.FC = () => {
     }
   }, []);
 
-  const handleStargazerEnable = () => {
-    window["ethereum"]
-      .enable()
-      .then((account) => {
-        setActiveAccount(account);
-        console.log("Successfully connected to Stargazer.", account);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  };
-
-  const handleEthSignMessage = (message) => {
-    return window["ethereum"]
-      .request({ method: "eth_requestAccounts" })
-      .then((accounts) => accounts[0])
-      .then((currentAccount) => {
-        return window["ethereum"]
-          .request({
-            method: "personal_sign",
-            params: [message, currentAccount, ""],
-          })
-          .then((sig) => {
-            sig = sig.startsWith("0x") ? sig.slice(2) : sig;
-            console.log("SIG", sig);
-            return { address: currentAccount, sig };
-          });
-      });
-  };
-
   const handleDagSignMessage = (message) => {
     return window["stargazer"]
       .request({ method: "getAddress" })
@@ -99,7 +69,7 @@ const BuyDag: React.FC = () => {
                 params: [message, currentAccount],
               })
               .then((sig) => {
-                console.log("SIG", sig);
+                //console.log("SIG", sig);
                 return { address: currentAccount, sig, network };
               });
           });
@@ -107,7 +77,7 @@ const BuyDag: React.FC = () => {
   };
 
   const handleSubmitRequest = () => {
-    const statement = `I am buying ${dagValue} DAG for ${usdValue} USD`;
+    const statement = `I am donating ${usdValue} USD and receiving ${dagValue} DAG`;
     handleDagSignMessage(statement).then(({ address, sig, network }) => {
       if (!sig) {
         setStep(2);
@@ -146,7 +116,7 @@ const BuyDag: React.FC = () => {
           // if (!res.ok) {
           //   throw result;
           // }
-          console.log(result);
+          //console.log(result);
           setReceipt(result);
           setTransactionLoading(false);
         })
@@ -170,8 +140,7 @@ const BuyDag: React.FC = () => {
       case 1:
         return (
           <BuyDagForm
-            nextStep={(usdValue, dagValue) => {
-              console.log(usdValue, dagValue);
+            nextStep={() => {
               setStep(2);
             }}
           />
@@ -182,8 +151,7 @@ const BuyDag: React.FC = () => {
             prevStep={() => {
               setStep(1);
             }}
-            nextStep={({ cardName, cardNumber, expiryDate, cvv }) => {
-              console.log({ cardName, cardNumber, expiryDate, cvv });
+            nextStep={() => {
               setStep(3);
               handleSubmitRequest();
               setTransactionLoading(true);

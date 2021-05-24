@@ -51,6 +51,16 @@
       }
     }
 
+    .labelRowSm {
+      margin-top: 30px;
+      display: flex;
+      width: 100%;
+      flex-direction: column;
+      font-size: 10px;
+      font-weight: 500;
+      color: $gray-dark;
+    }
+
     .item {
       width: 100%;
       height: 36px;
@@ -73,7 +83,7 @@
       }
 
       .label {
-        min-width: 47px;
+        min-width: 54px;
         font-family: Inter;
         font-style: normal;
         font-weight: 500;
@@ -251,5 +261,14 @@
         color: $primary-600;
       }
     }
+  }
+  .serviceDown {
+    padding-top: 12px;
+    font-family: Roboto;
+    font-size: 12px;
+    line-height: 12px;
+    width: 100%;
+    box-sizing: border-box;
+    color: #9f1b1b;
   }
 }
